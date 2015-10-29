@@ -57,121 +57,99 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-template<class T>
-inline char read(T &n){
-    T x = 0, tmp = 1; char c = getchar();
-    while ((c < '0' || c > '9') && c != '-' && c != EOF) c = getchar();
-    if (c == '-') c = getchar(), tmp = -1;
-    while (c >= '0' && c <= '9') x *= 10, x += (c - '0'), c = getchar();
-    n = x * tmp;
-    return c;
+const int N = 200005;
+
+int n;
+LL a[N * 4], b[N * 4], d[N * 4];
+int h[N];
+
+void push_up(int k) {
+    a[k] = a[k << 1] + a[k << 1 | 1];
+    b[k] = max(b[k << 1], b[k << 1 | 1]);
 }
 
-template <class T>
-inline void write(T n) {
-    if (n < 0) {
-        putchar('-');
-        n = -n;
-    }
-    int len = 0,data[20];
-    while (n) {
-        data[len++] = n%10;
-        n /= 10;
-    }
-    if (!len) data[len++] = 0;
-    while (len--) putchar(data[len] + 48);
-}
-
-const int N = 200005, SZ = 262144, INF = ~0U >> 1;
-
-int n, M, h;
-int t[SZ * 2], d[SZ];
-int b[N];
-
-void init() {
-	M = 1;
-	while (M <= n) M <<= 1;
-	h = sizeof(int) * 8 - __builtin_clz(M);
-	rep (i, n) t[M + i] = b[i];
-	FORD (i, M - 1, 1) t[i] = t[i << 1] + t[i << 1 | 1], d[i] = 0;
-}
-
-void calc(int p, int k) {
-    if (d[p] == 0) t[p] = t[p << 1] + t[p << 1 | 1];
-    else t[p] = d[p] * k;
-}
-
-void apply(int p, int value, int k) {
-    t[p] = value * k;
-    if (p < M) d[p] = value;
-}
-
-void build(int l, int r) {
-    int k = 2;
-    for (l += M, r += M - 1; l > 1; k <<= 1) {
-        l >>= 1, r >>= 1;
-        for (int i = r; i >= l; --i) calc(i, k);
+void init(int k, int s, int t) {
+    d[k] = -1;
+    if (s == t) a[k] = b[k] = h[s];
+    else {
+        int mid = (s + t) >> 1;
+        init(k << 1, s, mid);
+        init(k << 1 | 1, mid + 1, t);
+        push_up(k);
     }
 }
 
-void push(int l, int r) {
-    int s = h, k = 1 << (h - 1);
-    for (l += M, r += M - 1; s > 0; --s, k >>= 1)
-        for (int i = l >> s; i <= r >> s; ++i) if (d[i] != 0) {
-                apply(i << 1, d[i], k);
-                apply(i << 1 | 1, d[i], k);
-                d[i] = 0;
-            }
+void push_down(int k, int s, int t) {
+    if (d[k] == -1) return ;
+    int l = k << 1, r = k << 1 | 1, mid = (t + s) >> 1;
+    a[l] = d[k] * (mid - s + 1), b[l] = d[k], d[l] = d[k];
+    a[r] = d[k] * (t - mid), b[r] = d[k], d[r] = d[k];
+    d[k] = -1;
 }
 
-//[l, r)
-void modify(int l, int r, LL value) {
-    if (value == 0) return;
-    push(l, l + 1);
-    push(r - 1, r);
-    int l0 = l, r0 = r, k = 1;
-    for (l += M, r += M; l < r; l >>= 1, r >>= 1, k <<= 1) {
-        if (l & 1) apply(l++, value, k);
-        if (r & 1) apply(--r, value, k);
+void update(int k, int s, int t, int l, int r, int f) {
+    if (r < s || l > t) return ;
+    if (s >= l && t <= r) {
+        a[k] = (LL) f * (t - s + 1);
+        b[k] = f, d[k] = f;
+        return ;
     }
-    build(l0, l0 + 1);
-    build(r0 - 1, r0);
+    push_down(k, s, t);
+    int mid = (s + t) >> 1;
+    update(k << 1, s, mid, l, r, f);
+    update(k << 1 | 1, mid + 1, t, l, r, f);
+    push_up(k);
 }
 
-//[l, r)
-int query(int l, int r) {
-    push(l, l + 1);
-    push(r - 1, r);
-    int res = 0;
-    for (l += M, r += M; l < r; l >>= 1, r >>= 1) {
-        if (l & 1) res += t[l++];
-        if (r & 1) res += t[--r];
-    }
-    return res;
+LL gao(int k, int s, int t, int l, int r) {
+    if (r < s || l > t) return 0;
+    if (s >= l && t <= r) return a[k];
+    push_down(k, s, t);
+    int mid = (s + t) >> 1;
+    LL ans = gao(k << 1, s, mid, l, r) + gao(k << 1 | 1, mid + 1, t, l, r);
+    return ans;
 }
+
+int wid(int k, int s, int t, int val) {
+    int mid = (s + t) >> 1;
+    if (s == t) return s;
+    push_down(k, s, t);
+    if (b[k << 1] >= val) return wid(k << 1, s, mid, val);
+    return wid(k << 1 | 1, mid + 1, t, val);
+}
+
+int c[N], nxt[N];
+bool vis[N];
+map<int, int> q;
 
 int main() {
-    while (~scanf("%d", &n)) {
-
+    int p, l, r;
+    LL ans;
+    while (~scanf("%d", &n) && n) {
+        FOR (i, 1, n) scanf("%d", &c[i]);
+        memset(vis, 0, sizeof(vis));
+        memset(nxt, -1, sizeof(nxt));
+        p = 0, ans = 0, q.clear();
+        FOR (i, 1, n) {
+            if (c[i] < N) vis[c[i]] = 1;
+            while (vis[p] == 1) p++;
+            h[i] = p, ans += p;
+            if (q.count(c[i])) nxt[q[c[i]]] = i;
+            q[c[i]] = i;
+        }
+        init(1, 1, n);
+        FOR (i, 1, n - 1) {
+            update(1, 1, n, i, i, -1);
+            if (b[1] >= c[i]) {
+                l = wid(1, 1, n, c[i]);
+                r = nxt[i];
+                if (r == -1) r = n;
+                else r--;
+                if (l <= r) update(1, 1, n, l, r, c[i]);
+            }
+            ans += gao(1, 1, n, i + 1, n);
+        }
+        printf("%I64d\n", ans);
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
