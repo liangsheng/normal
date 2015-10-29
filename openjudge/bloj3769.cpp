@@ -57,26 +57,29 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1005;
 const int NODE = 1005;
-const int CH = 26;
+const int CH = 4;
 
 int e;
 int chd[NODE][CH];
 int work[NODE];
 int fail[NODE];
 int q[NODE];
+map<char, int> sw;
 
 void init() {
     e = 1;
     memset(chd[0], -1, sizeof(chd[0]));
     work[0] = 0;
+    sw.clear();
+    sw['A'] = 0, sw['C'] = 1, sw['G'] = 2, sw['T'] = 3;
 }
 
 void add(char* str, int val) {
+    //cout << "LLL " << str << '\n';
     int i, id, p = 0;
     for (i = 0; str[i]; i++) {
-        id = str[i] - '0';
+        id = sw[str[i]];
         if (chd[p][id] == -1) {
             memset(chd[e], -1, sizeof(chd[e]));
             work[e] = 0;
@@ -102,14 +105,62 @@ void build() {
             v = chd[p][i];
             if (v != -1) {
                 fail[v] = chd[fail[p]][i];
-                if (work[fail[v]] == -1) work[v] = -1;
+                work[v] |= work[fail[v]];
                 q[tail++] = v;
             } else chd[p][i] = chd[fail[p]][i];
         }
     }
 }
 
+const int N = 55, L = 25, M = 1005, INF = M;
+
+int n, m;
+char str[L], s[M];
+int dp[2][NODE];
+
+void get_min(int &x, int y) {
+    if (x == -1 || x > y) x = y;
+}
+
+void solve() {
+    //sc(e);
+    //FOR (i, 1, e - 1) cout << i << ' ' << fail[i] << '\n';
+    int now = 0, pre = 1, ans = -1, p;
+    memset(dp[now], -1, sizeof(now));
+    dp[now][0] = 0;
+    rep (i, m) {
+        swap(now, pre);
+        memset(dp[now], -1, sizeof(dp[now]));
+        rep (j, e) {
+            if (dp[pre][j] == -1) continue;
+            rep (k, CH) {
+                p = chd[j][k];
+                if (work[p]) continue;
+                get_min(dp[now][chd[j][k]], dp[pre][j] + !(sw[s[i]] == k));
+            }
+        }
+    }
+    rep (j, e) {
+        if (dp[now][j] == -1) continue;
+        get_min(ans, dp[now][j]);
+    }
+    printf("%d\n", ans);
+}
+
 int main() {
+    int cas = 0;
+    while (~scanf("%d", &n) && n) {
+        init();
+        rep (i, n) {
+            scanf("%s", str);
+            add(str, 1);
+        }
+        build();
+        scanf("%s", s);
+        m = strlen(s);
+        printf("Case %d: ", ++cas);
+        solve();
+    }
     return 0;
 }
 
