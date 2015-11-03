@@ -57,16 +57,76 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1005;
+const int N = 1005, M = N * 30, CH = 2, S = 30;
 
-int T, n;
+int T, n, e;
 int a[N];
+int chd[M][CH], f[M][3];
+int b[S + 5];
+
+void init() {
+    e = 1;
+    memset(chd[0], -1, sizeof(chd[0]));
+    f[0][0] = 0, f[0][1] = f[0][2] = -1;
+}
+
+void hl(int p, int id) {
+    f[p][0]++;
+    if (f[p][1] == -1) f[p][1] = id;
+    else if (f[p][2] == -1) f[p][2] = id;
+}
+
+void gao(int x) {
+    memset(b, 0, sizeof(b));
+    if (x == 0) b[0] = 0, sz = 1;
+    else {
+        sz = 0;
+        while (x != 0) {
+            b[sz++] = x & 1;
+            x >>= 1;
+        }
+    }
+}
+
+void add(int x, int id) {
+    int p = 0;
+    gao(x);
+    hl(p, id);
+    FORD (i, S - 1, 0) {
+        if (chd[p][b[i]] == -1) {
+            memset(chd[e], -1, sizeof(chd[e]));
+            f[e][0] = 0, f[e][1] = f[e][2] = -1;
+            e++;
+        }
+        p = chd[p][a[i]];
+        hl(p, id);
+    }
+}
+
+int work(int x, int i, int j) {
+    int p = 0;
+    gao(x);
+
+}
 
 int main() {
+    //cout << (1LL << 30) << '\n' << 1000000000 << '\n' << (~0U >> 1);
+    int ans, tmp, res;
     scanf("%d", &T);
     while (T--) {
         scanf("%d", &n);
-        rep (i, n) scanf("%d", &a[i]);
+        init();
+        rep (i, n) {
+            scanf("%d", &a[i]);
+            add(a[i], i);
+        }
+        ans = -1;
+        rep (i, n) FORD (j, i + 1, n - 1) {
+            tmp = a[i] + a[j];
+            res = work(tmp, i, j);
+            ans = max(ans, tmp);
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
