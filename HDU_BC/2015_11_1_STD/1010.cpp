@@ -57,7 +57,7 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1005, M = N * 30, CH = 2, S = 30;
+const int N = 1005, M = N * 30, CH = 2, S = 31;
 
 int T, n, e;
 int a[N];
@@ -77,6 +77,7 @@ void hl(int p, int id) {
 }
 
 void gao(int x) {
+    int sz;
     memset(b, 0, sizeof(b));
     if (x == 0) b[0] = 0, sz = 1;
     else {
@@ -96,21 +97,34 @@ void add(int x, int id) {
         if (chd[p][b[i]] == -1) {
             memset(chd[e], -1, sizeof(chd[e]));
             f[e][0] = 0, f[e][1] = f[e][2] = -1;
-            e++;
+            chd[p][b[i]] = e++;
         }
-        p = chd[p][a[i]];
+        p = chd[p][b[i]];
         hl(p, id);
     }
 }
 
-int work(int x, int i, int j) {
-    int p = 0;
-    gao(x);
+bool ok(int p, int i, int j) {
+    if (f[p][0] > 2) return 1;
+    if (f[p][1] != -1 && f[p][1] != i && f[p][1] != j) return 1;
+    if (f[p][2] != -1 && f[p][2] != i && f[p][2] != j) return 1;
+    return 0;
+}
 
+int work(int x, int i, int j) {
+    int p = 0, u, ans = 0;
+    gao(x);
+    FORD (k, S - 1, 0) {
+        u = b[k] ^ 1;
+        int fk = (chd[p][b[k]] != -1) && ok(chd[p][b[k]], i, j);
+        int fu = (chd[p][u] != -1) && ok(chd[p][u], i, j);
+        if (fu) p = chd[p][u], ans = (ans << 1) + u;
+        else p = chd[p][b[k]], ans = (ans << 1) + b[k];
+    }
+    return ans ^ x;
 }
 
 int main() {
-    //cout << (1LL << 30) << '\n' << 1000000000 << '\n' << (~0U >> 1);
     int ans, tmp, res;
     scanf("%d", &T);
     while (T--) {
@@ -121,36 +135,12 @@ int main() {
             add(a[i], i);
         }
         ans = -1;
-        rep (i, n) FORD (j, i + 1, n - 1) {
+        rep (i, n) FOR (j, i + 1, n - 1) {
             tmp = a[i] + a[j];
             res = work(tmp, i, j);
-            ans = max(ans, tmp);
+            ans = max(ans, res);
         }
         printf("%d\n", ans);
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
