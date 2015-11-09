@@ -23,6 +23,7 @@
 *.lib
 
 # Executables
+*.in
 *.exe
 *.out
 *.app

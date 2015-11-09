@@ -57,7 +57,36 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 4200;
+
+int T, n, m;
+int a[N], dp[2][N];
+pii p[N];
+
 int main() {
+    int now, pre, h, e;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        FOR (i, 1, n - 1) scanf("%d", &a[i]);
+        now = 0, pre = 1, m = 2 * n - 2;
+        memset(dp[now], -1, sizeof(dp[now]));
+        FOR (i, 1, n - 1) dp[now][i] = a[i];
+        FOR (i, 2, n - 1) {
+            swap(now, pre);
+            memset(dp[now], -1 ,sizeof(dp[now]));
+            h = e = 0;
+            FOR (j, 1, m) {
+                if (dp[pre][j - 1] != -1) {
+                    while (h != e && dp[pre][j - 1] >= p[e - 1].Y) e--;
+                    p[e++] = mp(j - 1, dp[pre][j - 1]);
+                }
+                while (h != e && p[h].X < j - n + 1) h++;
+                if (h == e) dp[now][j] = -1;
+                else dp[pre][j] = p[h].Y
+            }
+        }
+    }
     return 0;
 }
 
