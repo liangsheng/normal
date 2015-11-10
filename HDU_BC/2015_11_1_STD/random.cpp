@@ -40,7 +40,7 @@
 #define sc(x) cout << #x" = " << x << endl, system("pause")
 #define sc2(x, y) cout << #x" = " << x << " " << #y" = " << y << endl, system("pause")
 #define sc3(x, y, z) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << endl, system("pause")
-#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl;//, system("pause")
+#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl, system("pause")
 
 #define in(n) scanf("%d", &n)
 #define in2(n, m) scanf("%d %d", &n, &m)
@@ -57,39 +57,37 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 2020, INF = 10000 * 2020;
-
-int T, n;
-int a[N], dp[N][N], f[N][N];
-
 int main() {
-    //file_r("in.in");
-    //file_w("1.out");
-    int ans, tmp, d;
-    scanf("%d", &T);
+    file_w("in.in");
+    srand(10);
+    int T, n;
+    T = 30;
+    cout << T << '\n';
     while (T--) {
-        scanf("%d", &n);
-        FOR (i, 1, n - 1) scanf("%d", &a[i]);
-        a[0] = a[1];
-        FOR (i, 1, n - 1) FOR (j, 1, n - 2) dp[i][j] = -INF;
-        dp[0][0] = n * a[1];
-        FOR (i, 1, n) FOR (j, 0, n - 2) {
-            dp[i][j] = dp[i - 1][j];
-            f[i][j] = 1;
-            if (j > 0 && dp[i][j - 1] != -INF) {
-                d = f[i][j - 1];
-                tmp = dp[i][j - 1] + a[d + 1] - a[d];
-                if (tmp > dp[i][j]) dp[i][j] = tmp, f[i][j] = d + 1;
-            }
-            sc4(i, j, dp[i][j], f[i][j]);
+        n = rand() % 5 + 2;
+        cout << n << '\n';
+        rep (i, n - 1) {
+            int x = rand() % 5 + 1;
+            cout << x << ' ';
         }
-        printf("%d\n", dp[n][n - 2]);
+        cout << "\n\n";
     }
     return 0;
 }
 
-/*
-10
-6
-3 2 3 3 2
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
