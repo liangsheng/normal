@@ -57,33 +57,37 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+template<class T>
+inline char read(T &n){
+    T x = 0, tmp = 1; char c = getchar();
+    while ((c < '0' || c > '9') && c != '-' && c != EOF) c = getchar();
+    if (c == '-') c = getchar(), tmp = -1;
+    while (c >= '0' && c <= '9') x *= 10, x += (c - '0'), c = getchar();
+    n = x * tmp;
+    return c;
+}
+
 const int N = 2020, INF = 10000 * 2020;
 
 int T, n;
-int a[N], dp[N][N], f[N][N];
+int a[N], dp[N];
 
 int main() {
+    //memset(dp, 127, sizeof(dp));  2139062143
+    //memset(dp, 128, sizeof(dp));   -2139062144
     //file_r("in.in");
     //file_w("1.out");
     int ans, tmp, d;
-    scanf("%d", &T);
+    read(T);
     while (T--) {
-        scanf("%d", &n);
-        FOR (i, 1, n - 1) scanf("%d", &a[i]);
-        a[0] = a[1];
-        FOR (i, 1, n - 1) FOR (j, 1, n - 2) dp[i][j] = -INF;
-        dp[0][0] = n * a[1];
-        FOR (i, 1, n) FOR (j, 0, n - 2) {
-            dp[i][j] = dp[i - 1][j];
-            f[i][j] = 1;
-            if (j > 0 && dp[i][j - 1] != -INF) {
-                d = f[i][j - 1];
-                tmp = dp[i][j - 1] + a[d + 1] - a[d];
-                if (tmp > dp[i][j]) dp[i][j] = tmp, f[i][j] = d + 1;
-            }
-            sc4(i, j, dp[i][j], f[i][j]);
+        read(n);
+        FOR (i, 1, n - 1) read(a[i]);
+        memset(dp, 128, sizeof(dp));
+        dp[0] = a[1] * n;
+        FOR (i, 2, n - 1) FOR (j, i - 1, n - 2) {
+            dp[j] = max(dp[j], dp[j - i + 1] + a[i] - a[1]);
         }
-        printf("%d\n", dp[n][n - 2]);
+        printf("%d\n", dp[n - 2]);
     }
     return 0;
 }
