@@ -40,7 +40,7 @@
 #define sc(x) cout << #x" = " << x << endl, system("pause")
 #define sc2(x, y) cout << #x" = " << x << " " << #y" = " << y << endl, system("pause")
 #define sc3(x, y, z) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << endl, system("pause")
-#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl;//, system("pause")
+#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl, system("pause")
 
 #define in(n) scanf("%d", &n)
 #define in2(n, m) scanf("%d %d", &n, &m)
@@ -57,43 +57,37 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-template<class T>
-inline char read(T &n){
-    T x = 0, tmp = 1; char c = getchar();
-    while ((c < '0' || c > '9') && c != '-' && c != EOF) c = getchar();
-    if (c == '-') c = getchar(), tmp = -1;
-    while (c >= '0' && c <= '9') x *= 10, x += (c - '0'), c = getchar();
-    n = x * tmp;
-    return c;
-}
-
-const int N = 2020, INF = 10000 * 2020;
-
-int T, n;
-int a[N], dp[N];
-
 int main() {
-    //memset(dp, 127, sizeof(dp));  2139062143
-    //memset(dp, 128, sizeof(dp));   -2139062144
-    //file_r("in.in");
-    //file_w("1.out");
-    int ans, tmp, d;
-    read(T);
+    file_w("in.in");
+    srand(10);
+    int T, n;
+    T = 30;
+    cout << T << '\n';
     while (T--) {
-        read(n);
-        FOR (i, 1, n - 1) read(a[i]);
-        memset(dp, 128, sizeof(dp));
-        dp[0] = a[1] * n;
-        FOR (i, 2, n - 1) FOR (j, i - 1, n - 2) {
-            dp[j] = max(dp[j], dp[j - i + 1] + a[i] - a[1]);
+        n = rand() % 5 + 2;
+        cout << n << '\n';
+        rep (i, n - 1) {
+            int x = rand() % 5 + 1;
+            cout << x << ' ';
         }
-        printf("%d\n", dp[n - 2]);
+        cout << "\n\n";
     }
     return 0;
 }
 
-/*
-10
-6
-3 2 3 3 2
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -67,33 +67,46 @@ inline char read(T &n){
     return c;
 }
 
-const int N = 2020, INF = 10000 * 2020;
+const int N = 1000005, MOD = 998244353;
 
-int T, n;
-int a[N], dp[N];
+int T, n, m, e;
+int dp[N], f[N];
+
+int power(int x, int y) {
+    int ans = 1;
+    while (y) {
+        if (y & 1) ans = (LL) ans * x % MOD;
+        x = (LL) x * x % MOD;
+        y >>= 1;
+    }
+    return ans;
+}
 
 int main() {
-    //memset(dp, 127, sizeof(dp));  2139062143
-    //memset(dp, 128, sizeof(dp));   -2139062144
-    //file_r("in.in");
-    //file_w("1.out");
-    int ans, tmp, d;
+    int x, y, ans;
     read(T);
     while (T--) {
-        read(n);
-        FOR (i, 1, n - 1) read(a[i]);
-        memset(dp, 128, sizeof(dp));
-        dp[0] = a[1] * n;
-        FOR (i, 2, n - 1) FOR (j, i - 1, n - 2) {
-            dp[j] = max(dp[j], dp[j - i + 1] + a[i] - a[1]);
+        read(n), read(m);
+        e = 0;
+        memset(f, 0, sizeof(f));
+        rep (i, n) {
+            read(x);
+            e = e > x ? e : x;
+            f[x]++;
         }
-        printf("%d\n", dp[n - 2]);
+        ans = 0;
+        memset(dp, 0, sizeof(dp));
+        FOR (i, 1, e) {
+            dp[i] = ((LL) power(i, m) - dp[i] + MOD) % MOD;
+            y = f[i];
+            for (int j = i + i; j <= e; j += i) {
+                y += f[j];
+                dp[j] = ((LL) dp[j] + dp[i]) % MOD;
+            }
+            y = (power(2, y) - 1 + MOD) % MOD;
+            ans = (ans + (LL) dp[i] * y) % MOD;
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
-
-/*
-10
-6
-3 2 3 3 2
-*/

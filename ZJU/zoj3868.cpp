@@ -57,43 +57,44 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-template<class T>
-inline char read(T &n){
-    T x = 0, tmp = 1; char c = getchar();
-    while ((c < '0' || c > '9') && c != '-' && c != EOF) c = getchar();
-    if (c == '-') c = getchar(), tmp = -1;
-    while (c >= '0' && c <= '9') x *= 10, x += (c - '0'), c = getchar();
-    n = x * tmp;
-    return c;
+const int N = 1000005, MOD = 998244353;
+
+int T, n, m, e;
+int dp[N], f[N];
+
+int power(int x, int y) {
+    int ans = 1;
+    while (y) {
+        if (y & 1) ans = (LL) ans * x % MOD;
+        x = (LL) x * x % MOD;
+        y >>= 1;
+    }
+    return ans;
 }
 
-const int N = 2020, INF = 10000 * 2020;
-
-int T, n;
-int a[N], dp[N];
-
 int main() {
-    //memset(dp, 127, sizeof(dp));  2139062143
-    //memset(dp, 128, sizeof(dp));   -2139062144
-    //file_r("in.in");
-    //file_w("1.out");
-    int ans, tmp, d;
-    read(T);
+    int x, y, ans;
+    scanf("%d", &T);
     while (T--) {
-        read(n);
-        FOR (i, 1, n - 1) read(a[i]);
-        memset(dp, 128, sizeof(dp));
-        dp[0] = a[1] * n;
-        FOR (i, 2, n - 1) FOR (j, i - 1, n - 2) {
-            dp[j] = max(dp[j], dp[j - i + 1] + a[i] - a[1]);
+        scanf("%d %d", &n, &m);
+        e = 0;
+        memset(f, 0, sizeof(f));
+        rep (i, n) {
+            scanf("%d", &x);
+            e = max(e, x);
+            f[x]++;
         }
-        printf("%d\n", dp[n - 2]);
+        ans = 0;
+        FORD (i, e, 1) {
+            dp[i] = 0, x = 0;
+            for (int j = i; j <= e; j += i) {
+                x += f[j];
+                dp[i] = ((LL) dp[i] + dp[j]) % MOD;
+            }
+            dp[i] = ((LL) power(2, x) - 1 - dp[i] + MOD) % MOD, y = power(i, m);
+            ans = (ans + (LL) dp[i] * y) % MOD;
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
-
-/*
-10
-6
-3 2 3 3 2
-*/
