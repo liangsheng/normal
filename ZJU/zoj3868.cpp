@@ -57,34 +57,44 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1000005;
+const int N = 1000005, MOD = 998244353;
 
-int T, n, m;
-int a[N];
+int T, n, m, e;
+int dp[N], f[N];
+
+int power(int x, int y) {
+    int ans = 1;
+    while (y) {
+        if (y & 1) ans = (LL) ans * x % MOD;
+        x = (LL) x * x % MOD;
+        y >>= 1;
+    }
+    return ans;
+}
 
 int main() {
+    int x, y, ans;
     scanf("%d", &T);
     while (T--) {
         scanf("%d %d", &n, &m);
-        rep (i, n) scanf("%d", &a[i]);
+        e = 0;
+        memset(f, 0, sizeof(f));
+        rep (i, n) {
+            scanf("%d", &x);
+            e = max(e, x);
+            f[x]++;
+        }
+        ans = 0;
+        FORD (i, e, 1) {
+            dp[i] = 0, x = 0;
+            for (int j = i; j <= e; j += i) {
+                x += f[j];
+                dp[i] = ((LL) dp[i] + dp[j]) % MOD;
+            }
+            dp[i] = ((LL) power(2, x) - 1 - dp[i] + MOD) % MOD, y = power(i, m);
+            ans = (ans + (LL) dp[i] * y) % MOD;
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
