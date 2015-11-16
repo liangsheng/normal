@@ -60,7 +60,6 @@ typedef long long LL;
 const int N = 505;
 
 int n;
-int g[N][N];
 vpii a[N];
 
 int main() {
@@ -73,45 +72,30 @@ int main() {
         for (i = 1; i <= n; i++) a[i].clear();
         if (n % 2)  h = (n + 1) / 2, w = n, d = (n - 1) / 2;
         else h = n / 2, w = n + 1, d = n / 2 + 1;
-        //sc3(h, w, d);
         for (i = j = 1; i <= n; i += 2, j++) {
-            for (k = 1; k <= (i + 1) / 2; k++) a[i].pb(mp(j, k)), g[j][k] = i;
-            for (l = j - 1; l >= 1; l--) a[i].pb(mp(l, (i + 1) / 2)), g[l][(i + 1) / 2] = i;
+            for (k = 1; k <= (i + 1) / 2; k++) a[i].pb(mp(j, k));
+            for (l = j - 1; l >= 1; l--) a[i].pb(mp(l, (i + 1) / 2));
         }
-        x = 1, y = h + 1;
-        //sc2(x, y);
-        if (h % 2 == 0) {
-            f = 1;
-            for (i = 2; i <= n; i += 2) {
-                for (j = 1; j <= i; j++) {
-                    a[i].pb(mp(x, y));
-                    g[x][y] = i;
-                    x += f;
-                    if (x > h) x = h, f = -1, y++;
-                    else if (x < 1) x = 1, f = 1, y++;
-                }
-            }
-        } else {
-            //puts("DDDD");
-            f = 1;
-            for (i = 2; i <= n; i += 2) {
-                for (j = 1; j <= i; j++) {
-                    a[i].pb(mp(x, y));
-                    g[x][y] = i;
-                    y += f;
-                    if (y > w) y = w, f = -1, x++;
-                    else if (y < h + 1) y = h + 1, f = 1, x++;
-                }
+        x = 1, y = h + 1, f = h % 2;
+        a[2].pb(mp(x, y));
+        if (f) a[2].pb(mp(x, y + 1)), x++;
+        else a[2].pb(mp(x + 1, y)), y++;
+        for (i = 4; i <= n; i += 2) {
+            //heng
+            if (f) {
+                for (j = 1; j <= i / 2; j++) a[i].pb(mp(x, y + j - 1));
+                for (j = i / 2; j >= 1; j--) a[i].pb(mp(x + 1, y + j - 1));
+                x = 1, y += i / 2, f = 0;
+            } else {
+                for (j = 1; j <= i / 2; j++) a[i].pb(mp(x + j - 1, y));
+                for (j = i / 2; j >= 1; j--) a[i].pb(mp(x + j - 1, y + 1));
+                x += i / 2, y = h + 1, f = 1;
             }
         }
         printf("%d %d\n", h, w);
         for (i = 1; i <= n; i++) {
             for (j = 0; j < i - 1; j++) printf("%d %d ", a[i][j].X, a[i][j].Y);
             printf("%d %d\n", a[i][i - 1].X, a[i][i - 1].Y);
-        }
-        FOR (i, 1, h) {
-            FOR (j, 1, w) cout << g[i][j];
-            cout << '\n';
         }
     }
     return 0;
