@@ -57,45 +57,50 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 25;
+const int INF = ~0U >> 1;
 
-int n, tol, ans, flag, id, d;
-int b[N];
-vi c;
-
-struct VampireTree {
-    int maxDistance(vector <int> a) {
-        n = a.size(), tol = 0, ans = 0;
-        rep (i, n) tol += a[i];
-        if (tol != 2 * (n - 1)) return -1;
-        memset(b, 0, sizeof(b));
-        while (1) {
-            c.clear(), tol = 0;
-            rep (i, n) {
-                tol += a[i];
-                if (a[i] == 1) c.pb(i), a[i] = 0;
-            }
-            if (c.size() == 0) break;
-            if (c.size() == 2 && tol == 2) {
-                ans = max(b[c[0]] + b[c[1]] + 1, ans);
-                break;
-            }
-            repit (it, c) {
-                id = *it, d = -1;
-                rep (i, n) if (d == -1 || a[i] > a[d]) d = i;
-                //sc2(id, d);
-                ans = max(ans, b[d] + b[id] + 1);
-                b[d] = max(b[d], b[id] + 1);
-                a[d]--;
-            }
-        }
-        return ans;
-    }
-};
+int T, n;
+string s;
+int h[30];
 
 int main() {
-    VampireTree p;
-    vector<int> a = {1, 1, 1, 2, 3};
-    cout << p.maxDistance(a) << '\n';
+    int cas = 0, ans;
+    cin >> T;
+    while (T--) {
+        cin >> s;
+        n = s.size(), ans = INF;
+        memset(h, -1, sizeof(h));
+        rep (i, n) {
+            int id = s[i] - 'a';
+            if (h[id] != -1) ans = min(ans, i - h[id]);
+            h[id] = i;
+        }
+        if (ans == INF) ans = -1;
+        cout << "Case #" << ++cas << ": " << ans << '\n';
+    }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

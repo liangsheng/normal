@@ -57,45 +57,57 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 25;
+int T;
+LL m, ans;
+LL a[7] = {1, 1, 2, 1, 2, 2, 3};
+LL b[100];
 
-int n, tol, ans, flag, id, d;
-int b[N];
-vi c;
+void init() {
+    b[1] = 1;
+    FOR (i, 2, 55) b[i] = 2 * b[i - 1] + (1LL << (i - 1));
+}
 
-struct VampireTree {
-    int maxDistance(vector <int> a) {
-        n = a.size(), tol = 0, ans = 0;
-        rep (i, n) tol += a[i];
-        if (tol != 2 * (n - 1)) return -1;
-        memset(b, 0, sizeof(b));
-        while (1) {
-            c.clear(), tol = 0;
-            rep (i, n) {
-                tol += a[i];
-                if (a[i] == 1) c.pb(i), a[i] = 0;
-            }
-            if (c.size() == 0) break;
-            if (c.size() == 2 && tol == 2) {
-                ans = max(b[c[0]] + b[c[1]] + 1, ans);
-                break;
-            }
-            repit (it, c) {
-                id = *it, d = -1;
-                rep (i, n) if (d == -1 || a[i] > a[d]) d = i;
-                //sc2(id, d);
-                ans = max(ans, b[d] + b[id] + 1);
-                b[d] = max(b[d], b[id] + 1);
-                a[d]--;
-            }
-        }
+LL gao(int p, LL m) {
+    if (p <= 3) {
+        LL ans = 0;
+        rep (i, m) ans += a[i];
         return ans;
     }
-};
+    LL tol = (1LL << (p - 1)) - 1;
+    if (m <= tol) return gao(p - 1, m);
+    LL ans = b[p - 1] + 1, id = m - (1LL << (p - 1));
+    ans += id;
+    return ans + gao(p - 1, id);
+}
 
 int main() {
-    VampireTree p;
-    vector<int> a = {1, 1, 1, 2, 3};
-    cout << p.maxDistance(a) << '\n';
+    //cout << (1LL << 54) << '\n' << "10000000000000000";
+    init();
+    //FOR (i, 1, 4) sc2(i, b[i]);
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%I64d", &m);
+        ans = gao(54, m);
+        printf("%I64d\n", ans);
+    }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

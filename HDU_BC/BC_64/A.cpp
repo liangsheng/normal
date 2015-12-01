@@ -57,45 +57,45 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 25;
+const int N = 100005;
 
-int n, tol, ans, flag, id, d;
-int b[N];
-vi c;
-
-struct VampireTree {
-    int maxDistance(vector <int> a) {
-        n = a.size(), tol = 0, ans = 0;
-        rep (i, n) tol += a[i];
-        if (tol != 2 * (n - 1)) return -1;
-        memset(b, 0, sizeof(b));
-        while (1) {
-            c.clear(), tol = 0;
-            rep (i, n) {
-                tol += a[i];
-                if (a[i] == 1) c.pb(i), a[i] = 0;
-            }
-            if (c.size() == 0) break;
-            if (c.size() == 2 && tol == 2) {
-                ans = max(b[c[0]] + b[c[1]] + 1, ans);
-                break;
-            }
-            repit (it, c) {
-                id = *it, d = -1;
-                rep (i, n) if (d == -1 || a[i] > a[d]) d = i;
-                //sc2(id, d);
-                ans = max(ans, b[d] + b[id] + 1);
-                b[d] = max(b[d], b[id] + 1);
-                a[d]--;
-            }
-        }
-        return ans;
-    }
-};
+int n;
+int a[N], b[N];
 
 int main() {
-    VampireTree p;
-    vector<int> a = {1, 1, 1, 2, 3};
-    cout << p.maxDistance(a) << '\n';
+    int ans, now, res;
+    while (~scanf("%d", &n)) {
+        ans = 0;
+        FOR (i, 1, n) {
+            scanf("%d", &a[i]);
+            b[i] = (1890 * a[i] + 143) % 10007 - a[i];
+            ans += a[i];
+        }
+        now = res = 0;
+        FOR (i, 1, n) {
+            now += b[i];
+            if (now < 0) now = 0;
+            res = max(res, now);
+        }
+        printf("%d\n", ans + res);
+    }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -57,45 +57,74 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 25;
+int T;
+int ex, ey, d;
+set< pair<int, int> > s;
+queue< pair<int, int> > q;
 
-int n, tol, ans, flag, id, d;
-int b[N];
-vi c;
-
-struct VampireTree {
-    int maxDistance(vector <int> a) {
-        n = a.size(), tol = 0, ans = 0;
-        rep (i, n) tol += a[i];
-        if (tol != 2 * (n - 1)) return -1;
-        memset(b, 0, sizeof(b));
-        while (1) {
-            c.clear(), tol = 0;
-            rep (i, n) {
-                tol += a[i];
-                if (a[i] == 1) c.pb(i), a[i] = 0;
-            }
-            if (c.size() == 0) break;
-            if (c.size() == 2 && tol == 2) {
-                ans = max(b[c[0]] + b[c[1]] + 1, ans);
-                break;
-            }
-            repit (it, c) {
-                id = *it, d = -1;
-                rep (i, n) if (d == -1 || a[i] > a[d]) d = i;
-                //sc2(id, d);
-                ans = max(ans, b[d] + b[id] + 1);
-                b[d] = max(b[d], b[id] + 1);
-                a[d]--;
-            }
-        }
-        return ans;
-    }
-};
+int gcd(int x, int y) {
+    return x % y ? gcd(y, x % y) : y;
+}
 
 int main() {
-    VampireTree p;
-    vector<int> a = {1, 1, 1, 2, 3};
-    cout << p.maxDistance(a) << '\n';
+    int x, y, z, u, v, w, cas = 0;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d %d", &ex, &ey);
+        s.clear();
+        s.insert(mp(ex, ey));
+        q.push(mp(ex, ey));
+        d = gcd(ex, ey);
+        while (!q.empty()) {
+            x = q.front().X, y = q.front().Y, q.pop();
+            //sc2(x, y);
+            x /= d, y /= d;
+            if (x % (y + 1) == 0) {
+                u = x / (y + 1), v = y;
+                if (gcd(u, v) == 1) {
+                    u = u * d, v = v * d;
+                    if (!s.count(mp(u, v))) {
+                        s.insert(mp(u, v));
+                        q.push(mp(u, v));
+                    }
+                }
+            }
+
+            if (y % (x + 1) == 0) {
+                u = x , v = y / (x + 1);
+                if (gcd(u, v) == 1) {
+                    u = u * d, v = v * d;
+                    if (!s.count(mp(u, v))) {
+                        s.insert(mp(u, v));
+                        q.push(mp(u, v));
+                    }
+                }
+            }
+        }
+        printf("Case #%d: %d\n", ++cas, SZ(s));
+    }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
