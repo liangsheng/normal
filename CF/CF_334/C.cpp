@@ -53,39 +53,22 @@ const int N = 100005;
 
 int n;
 char s[N];
-int L[N][2], R[N][2];
 
 int main() {
-    int ans, tmp;
-    while (~scanf("%d", &n)) {
-        scanf("%s", s + 1);
-        if (n == 1) {
-            puts("1\n");
-            continue;
-        }
-        L[0][0] = L[0][1] = 0;
-        L[1][0] = (s[1] == '0'), L[1][1] = (s[1] == '1');
-        FOR (i, 2, n) {
-            L[i][0] = max(L[i - 1][0], s[i] == '0' ? L[i - 1][1] + 1 : 0);
-            L[i][1] = max(L[i - 1][1], s[i] == '1' ? L[i - 1][0] + 1 : 0);
-        }
-
-        R[n + 1][0] = R[n + 1][1] = 0;
-        R[n][0] = (s[n] == '0'), R[n][1] = (s[n] == '1');
-        FORD (i, n - 1, 1) {
-            R[i][0] = max(R[i + 1][0], s[i] == '0' ? R[i + 1][1] + 1 : 0);
-            R[i][1] = max(R[i + 1][1], s[i] == '1' ? R[i + 1][0] + 1 : 0);
-        }
-
-        ans = max(L[n][0], L[n][1]);
-        //sc(ans);
-        FOR (i, 1, n) {
-            tmp = max(L[i - 1][0] + R[i + 1][0] + 1, L[i - 1][1] + R[i + 1][1] + 1);
-            //sc4(i, tmp, L[i - 1][0], R[i + 1][0]);
-            ans = max(ans, tmp);
-        }
-
-        printf("%d\n", ans);
-    }
+	int ans, id, t, p[2];
+	while (~scanf("%d", &n)) {
+		scanf("%s", s + 1);
+		ans = 0, t = 0;
+		for (int i = 1; i <= n; i++) {
+			ans++;
+			int j = i;
+			while (j + 1 <= n && s[j + 1] == s[i]) j++;
+			if (i != j) t += j - i + 1;
+			i = j;
+		}
+		if (t >= 3) t = 2;
+		else if (t == 2) t = 1;
+		printf("%d\n", ans + t);
+	}
     return 0;
 }
