@@ -57,27 +57,28 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int MOD = (1e9) + 7;
+const int MOD = (1e9) + 7, D = 44;
 const LL N = 1e13;
 
 LL n, m;
 
 int main() {
+    LL ans, i, j, l, r;
     while (cin >> n >> m) {
-
+        ans = 0;
+        for (i = 1; i * i <= n; i++) {
+            j = n / i;
+            if (i <= m && i != j) ans = (ans + i * j) % MOD;
+            l = n / (i + 1) + 1, r = min(m, n / i);
+            if (l > r) continue;
+            if ((l + r) % 2) ans = (ans + (r - l + 1) / 2 % MOD * ((l + r) % MOD) % MOD * (i % MOD) % MOD) % MOD;
+            else ans = (ans + (r + l) / 2 % MOD * ((r - l + 1) % MOD) % MOD * (i % MOD) % MOD) % MOD;
+        }
+        ans = (n % MOD * (m % MOD) - ans) % MOD;
+        cout << ans << '\n';
+//        ans = 0;
+//        FOR (i, 1, m) ans += n % i;
+//        cout << ans << '\n';
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -58,70 +58,43 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 305, M = 100005, CH = 26, INF = 522133279;
+const int N = 305, M = 100005, INF = 522133279;
 
 int T, n, m;
-char s[M];
-int dp[M][N];
+int lcp[N][N], dp[N][N], sz[N];
+string s[N];
 
-int e;
-int chd[M][CH];
-
-void init() {
-    e = 1;
-    memset(chd[0], -1, sizeof(chd[0]));
-}
-
-void add(char s[]) {
-    int i, id, p = 0;
-    for (i = 0; s[i]; i++) {
-        id = s[i] - 'a';
-        if (chd[p][id] == -1) {
-            memset(chd[e], -1, sizeof(chd[e]));
-            chd[p][id] = e++;
-        }
-        p = chd[p][id];
-    }
-}
-
-void dfs(int p, int fa) {
-    memset(dp[p], 31, sizeof(dp[p]));
-    int v, t, tmp;
-    dp[p][0] = 0;
-    repe (i, p) {
-        v = pnt[i];
-        if (v == fa) continue;
-    }
+int gao(int i, int j) {
+    int l = 0;
+    while (s[i][l] && s[j][l] && s[i][l] == s[j][l]) l++;
+    return l;
 }
 
 int main() {
-    sc(dp[1][1]);
-    int cas = 0;
+    file_r("text_editor.in");
+    int cas = 0, ans, r;
     scanf("%d", &T);
     while (T--) {
         scanf("%d %d", &n, &m);
-        init();
-        rep (i, n) {
-            scanf("%s", s);
-            add(s);
+        FOR (i, 1, n) cin >> s[i];
+        sort(s + 1, s + n + 1);
+        FOR (i, 1, n) sz[i] = SZ(s[i]);
+        FOR (i, 1, n) lcp[i][i] = SZ(s[i]), lcp[0][i] = 0;
+        FOR (i, 1, n - 1) lcp[i][i + 1] = gao(i, i + 1);
+        FOR (k, 3, n) FOR (i, 1, n - k + 1) lcp[i][i + k - 1] = min(lcp[i][i + k - 2], lcp[i + 1][i + k - 1]);
+        memset(dp, 31, sizeof(dp));
+        dp[0][0] = 0, ans = INF;
+        FOR (i, 1, n) {
+            r = min(i, m);
+            FOR (j, 1, r) {
+                FOR (k, 0, i - 1) {
+                    if (dp[k][j - 1] == INF) continue;
+                    dp[i][j] = min(dp[i][j], dp[k][j - 1] - 2 * lcp[k][i] + 2 * sz[i] + 1);
+                }
+            }
         }
-        dfs(0, -1);
+        FOR (i, m, n) ans = min(ans, dp[i][m]);
+        printf("Case #%d: %d\n", ++cas, ans);
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
