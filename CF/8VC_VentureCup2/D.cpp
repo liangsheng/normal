@@ -84,34 +84,49 @@ int gao(int s, int t) {
 }
 
 int main() {
-    int x, y;
+    int x, y, flag, now, tmp;
+    LL ans;
     while (~scanf("%d %d %d", &n, &vol, &m)) {
         FOR (i, 1, m) scanf("%d %d", &p[i].X, &p[i].Y);
         sort(p + 1, p + m + 1);
+        p[0].X = 0, p[0].Y = 0;
+        p[m + 1].X = n, p[m + 1].Y = 0;
+        flag = 1;
+        rep (i, m + 1) if (p[i + 1].X - p[i].X > vol) {
+            flag = 0;
+            break;
+        }
+        if (!flag) {
+            puts("-1");
+            continue;
+        }
         init();
-        memset(h, 127, sizeof(h));
+        memset(h, -1, sizeof(h));
         FORD (i, m, 1) {
             add(p[i].Y, i);
-            if (p[i].Y == 1) continue;
-            //sc(gao(1, p[i].Y - 1));
-            h[i] = gao(1, p[i].Y - 1);
+            if (p[i].Y == 1) h[i] = -1;
+            else {
+                h[i] = gao(1, p[i].Y - 1);
+                if (h[i] == INF || p[h[i]].X - p[i].X > vol) h[i] = -1;
+            }
         }
-        //FOR (i, 1, m) sc2(i, h[i]);
+        h[0] = -1, h[m] = m + 1, ans = 0;
+        FOR (i, 0, m) {
+            y = p[i + 1].X - p[i].X;
+            if (h[i] == -1) {
+                x = min(vol, n - p[i].X);
+                if (now < x) ans += (LL) p[i].Y * (x - now), now = x;
+                now = now - y;
+            } else {
+                tmp = p[h[i]].X - p[i].X;
+                if (tmp <= now) now -= y;
+                else {
+                    ans += (LL) p[i].Y * (tmp - now);
+                    now = tmp - y;
+                }
+            }
+        }
+        cout << ans << '\n';
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
