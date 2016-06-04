@@ -57,20 +57,68 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 500005;
+
+int n, m, p, e;
+char s[N], c[N];
+int L[N], R[N], a[N];
+int h[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+    int x, y, u, v;
+    while (~scanf("%d %d %d", &n, &m, &p)) {
+        scanf("%s", s + 1);
+        scanf("%s", c + 1);
+        R[0] = 1, L[n + 1] = n;
+        FORD (i, n, 1) L[i] = i - 1;
+        FOR (i, 1, n) R[i] = i + 1;
+        e = 0;
+        FOR (i, 1, n) {
+            if (s[i] == '(') h[e++] = i;
+            else {
+                a[i] = h[e - 1];
+                a[h[e - 1]] = i;
+                e--;
             }
-            x--;
         }
+        //FOR (i, 1, n) sc2(i, a[i]);
+        FOR (i, 1, m) {
+            if (c[i] == 'L') p = L[p];
+            else if (c[i] == 'R') p = R[p];
+            else {
+                x = p, y = a[p];
+                if (x > y) swap(x, y);
+                if (R[y] != n + 1) p = R[y];
+                else p = L[x];
+                u = L[x], v = R[y];
+                //sc4(x, y, u, v);
+                R[u] = v, L[v] = u;
+            }
+            //sc2(i, p);
+        }
+        x = 0;
+        while (R[x] != n + 1) {
+            x = R[x];
+            cout << s[x];
+        }
+        puts("");
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

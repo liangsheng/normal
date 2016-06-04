@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,75 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 15;
+
+int T, n;
+int a[N], f[N];
+set<int> s;
+map<pii, int> q;
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int flag, x;
+    q[mp(1, 3)] = 2, q[mp(3, 1)] = 2;
+    q[mp(4, 6)] = 5, q[mp(6, 4)] = 5;
+    q[mp(7, 9)] = 8, q[mp(9, 7)] = 8;
+
+    q[mp(1, 7)] = 4, q[mp(7, 1)] = 4;
+    q[mp(2, 8)] = 5, q[mp(8, 2)] = 5;
+    q[mp(3, 9)] = 6, q[mp(9, 3)] = 6;
+
+    q[mp(1, 9)] = 5, q[mp(9, 1)] = 5;
+    q[mp(3, 7)] = 5, q[mp(7, 3)] = 5;
+
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
+        scanf("%d", &n);
+        rep (i, n) scanf("%d", &a[i]);
+        s.clear();
+        rep (i, n) s.insert(a[i]);
+        if (SZ(s) != n) {
+            puts("invalid");
+            continue;
+        }
+        if (n < 4) {
+            puts("invalid");
+            continue;
+        }
+        flag = 1;
+        rep (i, n) {
+            if (a[i] > 9 || a[i] < 1) {
+                flag = 0;
                 break;
             }
-            x--;
         }
+        if (!flag) {
+            puts("invalid");
+            continue;
+        }
+        memset(f, 0, sizeof(f));
+        flag = 1;
+        rep (i, n - 1) {
+            f[a[i]] = 1;
+            if (!q.count(mp(a[i], a[i + 1]))) continue;
+            x = q[mp(a[i], a[i + 1])];
+            if (f[x] == 0) {
+                flag = 0;
+                break;
+            }
+        }
+        puts(flag ? "valid" : "invalid");
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+

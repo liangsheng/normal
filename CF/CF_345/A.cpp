@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,56 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 200005;
+
+int n;
+pii p[N];
+map<int, int> qx, qy;
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    int x;
+    LL ans;
+    while (~scanf("%d", &n)) {
+        qx.clear(), qy.clear();
+        rep (i, n) {
+            scanf("%d %d", &p[i].X, &p[i].Y);
+            qx[p[i].X]++, qy[p[i].Y]++;
         }
+        ans = 0;
+        repit (it, qx) {
+            x = it -> Y;
+            if (x >= 2) ans += (LL) x * (x - 1) / 2;
+        }
+        repit (it, qy) {
+            x = it -> Y;
+            if (x >= 2) ans += (LL) x * (x - 1) / 2;
+        }
+        sort(p, p + n);
+        rep (i, n) {
+            x = i;
+            while (i + 1 < n && p[i + 1] == p[i]) i++;
+            x = i - x + 1;
+            if (x >= 2) ans -= (LL) x * (x - 1) / 2;
+        }
+        cout << ans << '\n';
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

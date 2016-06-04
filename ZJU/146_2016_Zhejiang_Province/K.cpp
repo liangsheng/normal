@@ -57,20 +57,92 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+const int N = 100005, M = N * 2;
+
+int n, m, e;
+int head[N], pnt[M], nxt[M], c[M], t[M];
+
+void init() {
+    e = 0;
+    memset(head, -1, sizeof(head));
+}
+
+void add_edge(int u, int v, int tim, int cst) {
+    pnt[e] = v, t[e] = tim, c[e] = cst;
+    nxt[e] = head[u], head[u] = e++;
+}
+
+LL dis[N];
+bool vis[N];
+queue<int> q;
+
+int T;
+LL rest, resc;
+
+void spfa() {
+    int u, v;
+    LL tmp;
+    memset(dis, -1, sizeof(dis));
+    memset(vis, 0, sizeof(vis));
+    dis[0] = 0, vis[0] = 1, q.push(0);
+    while (!q.empty()) {
+        u = q.front(), q.pop(), vis[u] = 0;
+        repe (i, u) {
+            v = pnt[i];
+            tmp = dis[u] + t[i];
+            if (dis[v] == -1 || dis[v] > tmp) {
+                dis[v] = tmp;
+                if (!vis[v]) vis[v] = 1, q.push(v);
             }
-            x--;
         }
+    }
+    rest = 0;
+    rep (i, n) rest += dis[i];
+}
+
+int a[N];
+
+void gao() {
+    int v;
+    memset(a, 127, sizeof(a));
+    FOR (u, 1, n - 1) repe (i, u) {
+        v = pnt[i];
+        if (dis[v] + t[i] == dis[u]) a[u] = min(a[u], c[i]);
+    }
+    resc = 0;
+    FOR (i, 1, n - 1) resc += a[i];
+}
+
+int main() {
+    int u, v, tim, cst;
+    scanf("%d", &T);
+    while (T--) {
+        init();
+        scanf("%d %d", &n, &m);
+        rep (i, m) {
+            scanf("%d %d %d %d", &u, &v, &tim, &cst);
+            add_edge(u, v, tim, cst);
+            add_edge(v, u, tim, cst);
+        }
+        spfa();
+        gao();
+        printf("%lld %lld\n", rest, resc);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,67 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 200005;
+
+int n, e;
+int a[N << 1], ans[N], b[N << 1];
+pair<pii, int> p[N];
+
+void init() {
+    memset(b, 0, sizeof(b));
+}
+
+void add(int x, int y) {
+    for (; x > 0; x -= lowbit(x)) b[x] += y;
+}
+
+int cal(int x) {
+    int ans = 0;
+    for (; x <= e; x += lowbit(x)) ans += b[x];
+    return ans;
+}
+bool cmp(const pair<pii, int> &arg0, const pair<pii, int> &arg1) {
+    return arg0.X.Y < arg1.X.Y;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    while (~scanf("%d", &n)) {
+        e = 0;
+        rep (i, n) {
+            scanf("%d %d", &p[i].X.X, &p[i].X.Y);
+            a[e++] = p[i].X.X, a[e++] = p[i].X.Y;
+            p[i].Y = i;
         }
+        sort(a, a + e);
+        e = unique(a, a + e) - a;
+        rep (i, n) {
+            p[i].X.X = lower_bound(a, a + e, p[i].X.X) - a + 1;
+            p[i].X.Y = lower_bound(a, a + e, p[i].X.Y) - a + 1;
+        }
+        sort(p, p + n, cmp);
+        init();
+        rep (i, n) {
+            ans[p[i].Y] = cal(p[i].X.X + 1);
+            add(p[i].X.X, 1);
+        }
+        rep (i, n) printf("%d\n", ans[i]);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

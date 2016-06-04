@@ -57,20 +57,27 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+int n;
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
-        }
+    while (cin >> n) {
+        int x = n / 7, y = n % 7;
+        cout << x * 2 + (y - 5 > 0 ? y - 5 : 0) << ' ' << x * 2 + (y >= 2 ? 2 : y) << '\n';
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

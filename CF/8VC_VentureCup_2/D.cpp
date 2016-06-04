@@ -57,55 +57,86 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1005;
+const int N = 200005, INF = 2139062143;
 
-int n, m;
-LL k, cnt;
-int g[N][N];
-pii a[N * N];
-bool f[N][N];
-int dx[4] = {-1, 0, 1, 0};
-int dy[4] = {0, 1, 0, -1};
-queue<pii> q;
-
-void bfs(int u, int v, int val) {
-    int x, y;
-    f[u][v] = 1, cnt++;
-    q.push(mp(u, v));
-    while (!q.empty()) {
-        u = q.front().X, v = q.front().Y, q.pop();
-        rep (i, 4) {
-            x = u + dx[i], y = v + dy[i];
-            if (x < 0 || x >= n || y < 0 || y >= m) continue;
-            if (g[x][y] < val) continue;
-            q.push(mp(x, y)), cnt++;
-        }
-    }
-}
+int n, vol, m;
+int f[N], h[N];
+map<int, int> q;
+map<int, int> :: iterator it;
+vi g;
 
 int main() {
-    int id, x, y, flag;
-    while (cin >> n >> m >> k) {
-        rep (i, n) rep (j, m) {
-            scanf("%d", &g[i][j]);
-            id = i * m + j;
-            a[id] = mp(-g[i][j], id);
+    int p, x, flag, tmp;
+    LL ans;
+    while (cin >> n >> vol >> m) {
+        memset(f, -1, sizeof(f));
+        g.clear();
+        rep (i, m) {
+            cin >> p >> x;
+            f[p] = x;
+            g.pb(p);
         }
-        sort(a, a + n * m);
-        memset(f, 0, sizeof(f));
-        cnt = 0, falg = 0;
-        rep (th, n * m) {
-            id = a[th].Y, x = id / m, y = id % m;
-            bfs(x, y, g[x][y]);
-            if (k % g[x][y]) continue;
-            if (cnt >= (k / g[x][y])) {
-                flag = 1;
-                break;
+        sort(ALL(g));
+        q.clear();
+        memset(h, -1, sizeof(h));
+        FORD (i, n - 1, 1) {
+            if (f[i] == -1) continue;
+            it = q.lower_bound(f[i]);
+            if (it == q.begin()) continue;
+            it--;
+            h[i] = it -> Y;
+            q[f[i]] = i;
+        }
+        if (g[0] > vol) {
+            puts("-1");
+            continue;
+        }
+        vol -= g[0], flag = 1;
+        rep (i, m - 1) {
+            p = g[i];
+            if (h[p] == -1) {
+                tmp = g[i + 1] - g[i];
+                if (tmp > vol) {
+                    flag = 0;
+                    break;
+                }
+                if (tmp <= vol) {
+                    vol -= tmp;
+                } else {
+                    ans += (LL) f[p] * (tmp - vol), vol = 0;
+                }
+            } else {
+                tmp = h[p] - g[i];
+                if (tmp > vol) {
+                    tmp = g[i + 1] - g[i];
+                    if (tmp > vol) {
+                        flag = 0;
+                        break;
+                    }
+                    if (tmp <= vol) {
+                        vol -= tmp;
+                    } else {
+                        ans += tmp - vol, vol = 0;
+                    }
+                } else {
+                    if (tmp <= vol) {
+                        tmp -= vol;
+                    } else {
+                        ans += (LL) f[p] * (tmp - vol), vol = 0;
+                    }
+                }
             }
         }
+        if (!flag) {
+            puts("-1");
+            continue;
+        }
+        p = g[m - 1];
+        //if ()
     }
     return 0;
 }
+
 
 
 

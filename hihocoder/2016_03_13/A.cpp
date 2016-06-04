@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,61 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 55;
+
+int T, n;
+double a[N];
+int b[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int x, y, ans;
+    double t;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        scanf("%d", &n);
+        rep (i, n) {
+            scanf("%lf %d", &a[i], &b[i]);
         }
+        ans = 0;
+        rep (i, n) {
+            x = floor(a[i]);
+            if (x < a[i]) continue;
+            if (x % 5) continue;
+            ans = max(ans, b[i]);
+        }
+        rep (i, n) FOR (j, i + 1, n - 1) {
+            x = floor(a[i] + a[j]);
+            if (x < a[i] + a[j]) continue;
+            if (x % 5) continue;
+            ans = max(ans, b[i] + b[j]);
+        }
+        //sc(ans);
+        rep (i, n) FOR (j, i + 1, n - 1) FOR (k, j + 1, n - 1) {
+            x = floor(a[i] + a[j] + a[k]);
+            if (x < a[i] + a[j] + a[k]) continue;
+            if (x % 5) continue;
+            ans = max(ans, b[i] + b[j] + b[k]);
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

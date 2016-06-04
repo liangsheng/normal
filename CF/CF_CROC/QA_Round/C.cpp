@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,53 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 100005;
+
+int n;
+int sz[N], id[N], f[N];
+string s[N];
+map<string, vector<string> > q;
+
+bool ok(int i, int j) {
+    return s[i].substr(0, id[i]) == s[j].substr(0, id[j]);
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    int ans = 0;
+    string tmp;
+    cin >> n;
+    rep (i, n) {
+        cin >> s[i];
+        s[i] = s[i].substr(7);
+    }
+    sort(s, s + n);
+    n = unique(s, s + n) - s;
+    rep (i, n) {
+        sz[i] = SZ(s[i]);
+        id[i] = s[i].find('/');
+        if (id[i] == -1) id[i] = sz[i];
+        f[i] = sz[i] - id[i];
+    }
+    //puts("");
+    //rep (i, n) cout << i << ' ' << s[i] << '\n';
+    rep (i, n) {
+        tmp = s[i].substr(id[i], f[i]);
+        //sc2(i, id[i]);
+        while (i + 1 < n && ok(i, i + 1)) {
+            i++;
+            tmp += "#" + s[i].substr(id[i], f[i]);
         }
+        q[tmp].pb(s[i].substr(0, id[i]));
+        //sc2(tmp, s[i].substr(0, id[i]));
+    }
+    repit (it, q) {
+        if (SZ(it->Y) >= 2) ans++;
+    }
+    cout << ans << '\n';
+    repit (it, q) {
+        if (SZ(it->Y) < 2) continue;
+        repit (i, it->Y) cout << "http://" + *i << ' ';
+        cout << '\n';
     }
     return 0;
 }

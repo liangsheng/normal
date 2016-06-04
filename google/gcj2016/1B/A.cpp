@@ -57,20 +57,59 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 2005, M = 10;
+
+int T, n;
+char s[N];
+int c[M], k[26];
+string str[10] = {"ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE"};
+string ans = "ZGXWURFOSI";
+int id[10] = {0, 8, 6, 2, 4, 3, 5, 1, 7, 9};
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    file_r("A-large.in");
+    file_w("A-large.out");
+    int cas = 0;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        scanf("%s", s);
+        n = strlen(s);
+        memset(c, 0, sizeof(c));
+        memset(k, 0, sizeof(k));
+        rep (i, n) k[s[i] - 'A']++;
+        rep (i, 10) {
+            c[id[i]] = k[ans[i] - 'A'];
+            //sc2(id[i], c[id[i]]);
+            repit (it, str[id[i]]) k[*it - 'A'] -= c[id[i]];
         }
+        printf("Case #%d: ", ++cas);
+        rep (i, 10) rep (j, c[i]) printf("%d", i);
+        puts("");
+
+//        sort(s, s + n);
+//        cout << s << '\n';
+//        string hh;
+//        rep (i, 10) rep (j, c[i]) rep (l, SZ(str[i])) hh.pb(str[i][l]);
+//        sort(ALL(hh));
+//        cout << hh << '\n';
+//        string dd = s;
+//        if (dd != hh) cout << "FUCK!!!!!!!!!!!!!!!!!!!!!!" << '\n';
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

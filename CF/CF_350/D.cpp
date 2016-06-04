@@ -57,20 +57,50 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 100005, M = 2000000000;
+
+int n, k;
+int a[N], b[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+    int l, r, mid, flag;
+    LL m, t;
+    while (~scanf("%d %d", &n, &k)) {
+        rep (i, n) scanf("%d", &a[i]);
+        rep (i, n) scanf("%d", &b[i]);
+        l = 0, r = M;
+        while (l != r) {
+            mid = ((LL) l + r) >> 1LL, mid++;
+            m = k, flag = 1;
+            rep (i, n) {
+                t = (LL) a[i] * mid;
+                if (t <= b[i]) continue;
+                t -= b[i];
+                if (t > m) {
+                    flag = 0;
+                    break;
+                }
+                m -= t;
             }
-            x--;
+            if (flag) l = mid;
+            else r = mid - 1;
         }
+        printf("%d\n", l);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

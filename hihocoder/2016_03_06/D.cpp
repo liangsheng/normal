@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,81 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 4 + 5, M = 4 + 5, T = 1005;
+
+int Q, n, m, t, s, tol;
+int a[N][M], g[N][M], f[T], x[N * M], y[N * M];
+int b[T], c[T];
+int ax, ay;
+
+void gao() {
+    int cnt = 0, ok = 1, flag, tx, ty;
+    FOR (i, 1, n) {
+        flag = 0;
+        FOR (j, 1, m) {
+            g[i][j] = y[cnt++];
+            if (c[g[i][j]] != 0) flag = 1;
+        }
+        if (flag == 0) ok = 0;
+    }
+    tx = ty = 0;
+    FOR (i, 1, n) FOR (j, 1, m) {
+        tx += a[i][j] * b[g[i][j]];
+        ty += a[i][j] * c[g[i][j]];
+    }
+    if (tx < s) return ;
+    //sc4(tx, ty, ok, ay);
+    if (ty > ax) ax = ty, ay = ok;
+    else if (ty == ax && ok == 1) ay = 1;
+    //sc4(tx, ty, ok, ay);
+}
+
+void dfs(int p, int sum) {
+    if (sum == tol) {
+        copy(x, x + tol, y);
+        sort(y, y + tol);
+        do {
+            //rep (i, tol) cout << y[i] << '\n';puts("FFFF");
+            gao();
+        } while (next_permutation(y, y + tol));
+    } else {
+        if (p == t + 1) return ;
+        x[sum] = p;
+        dfs(p + 1, sum + 1);
+        dfs(p + 1, sum);
+    }
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    int ans, flag;
+    scanf("%d", &Q);
+    while (Q--) {
+        scanf("%d %d %d %d", &n, &m, &t, &s);
+        FOR (i, 1, n) FOR (j, 1, m) scanf("%d", &a[i][j]);
+        FOR (i, 1, t) scanf("%d", &b[i]);
+        FOR (i, 1, t) scanf("%d", &c[i]);
+        tol = n * m, ax = -1, ay = 0;
+        //sc(tol);
+        dfs(1, 0);
+        if (ax == -1) puts("Not Exist");
+        else {
+            printf("%d\n", ax);
+            if (ay == 0) puts("No");
+            else puts("YES");
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

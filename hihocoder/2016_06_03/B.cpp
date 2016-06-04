@@ -57,20 +57,111 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 55;
+
+int n, m, cnt, acnt, scnt;
+char g[N][N];
+bool f[N][N];
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+queue<pii> q;
+vpii h;
+
+struct Node {
+    int h, w, sz;
+    bool a[N][N];
+};
+
+vector<Node> d;
+
+void bfs(int u, int v) {
+    int x, y, s = 0, w0, w1, h0, h1;
+    Node tmp;
+    w0 = h0 = 55;
+    w1 = h1 = -1;
+    f[u][v] = 1;
+    q.push(mp(u, v));
+    h.clear();
+    while (!q.empty()) {
+        u = q.front().X, v = q.front().Y;
+        q.pop();
+        h.pb(mp(u, v));
+        w0 = min(w0, v), w1 = max(w1, v);
+        h0 = min(h0, u), h1 = max(h1, u);
+        s++;
+        rep (k, 4) {
+            x = u + dx[k], y = v + dy[k];
+            if (x < 0 || x >= n || y < 0 || y >= m) continue;
+            if (g[x][y] == '.') continue;
+            if (f[x][y]) continue;
+            f[x][y] = 1;
+            q.push(mp(x, y));
+        }
+    }
+    tmp.h = h1 - h0 + 1, tmp.w = w1 - w0 + 1, tmp.sz = s;
+    rep (i, tmp.h) rep (j, tmp.w) tmp.a[i][j] = 0;
+    repit (it, h) tmp.a[it->X - h0][it->Y - w0] = 1;//, sc2(it->X - h0, it->Y - w0);
+    d.pb(tmp);
+    //sc(tmp.sz);
+}
+
+bool ok(int x, int y) {
+    Node &u = d[x], &v = d[y];
+    if (u.h != v.h || u.w != v.w) return 0;
+    rep (i, u.h) rep (j, u.w) if (u.a[i][j] ^ v.a[i][j]) return 0;
+    return 1;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
+    bool flag;
+    while (~scanf("%d %d", &n, &m)) {
+        rep (i, n) scanf("%s", g[i]);
+        cnt = acnt = scnt = 0;
+        memset(f, 0, sizeof(f));
+        d.clear();
+        rep (i, n) rep (j, m) {
+            if (g[i][j] == '.') continue;
+            if (f[i][j]) continue;
+            bfs(i, j);
+        }
+        cnt = SZ(d);
+        rep (i, cnt) {
+            flag = 1;
+            rep (j, i) if (d[j].sz == d[i].sz) {
+                flag = 0;
                 break;
             }
-            x--;
+            acnt += flag;
         }
+        rep (i, cnt) {
+            flag = 1;
+            rep (j, i) if (ok(i, j)) {
+                flag = 0;
+                break;
+            }
+            scnt += flag;
+        }
+        printf("%d %d %d\n", cnt, acnt, scnt);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

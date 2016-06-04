@@ -57,20 +57,53 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+const int N = 505;
+
+int T, n, m;
+int a[N];
+LL dp[N][N];
+
+void getMin(LL &x, LL y) {
+    if (x == -1 || x > y) x = y;
+}
+
+LL solve() {
+    if (n < m) return 0;
+    int l, r;
+    LL tmp;
+    memset(dp, -1, sizeof(dp));
+    sort(a + 1, a + n + 1);
+    l = 1, r = n - m + 1;
+    FOR (i, l, r) dp[1][i] = sqr(a[i] - a[1]);
+    FOR (i, 1, m - 1) FOR (j, i, n - m + i) {
+        if (dp[i][j] == -1) continue;
+        l = 1, r = n - m + i + 1 - j;
+        FOR (k, l, r) {
+            tmp = dp[i][j] + sqr(a[j + k] - a[j + 1]);
+            getMin(dp[i + 1][j + k], tmp);
         }
+    }
+    return dp[m][n];
+}
+
+int main() {
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d %d", &n, &m);
+        FOR (i ,1, n) scanf("%d", &a[i]);
+        printf("%lld\n", solve());
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+

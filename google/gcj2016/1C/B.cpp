@@ -56,21 +56,77 @@ typedef pair<int, int> pii;
 typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
+typedef unsigned long long ULL;
+
+const int N = 55;
+const LL INF = 1e18;
+
+int T, n;
+LL m, M;
+LL g[N][N];
+LL a[N];
+
+void init() {
+    a[2] = 1, a[3] = 2;
+    FOR (i, 4, 50) {
+        a[i] = a[i - 1] * 2;
+    }
+    //FOR (i, 2, 50) cout << "i= " << i << ' ' << a[i] << '\n';
+}
+
+void gao() {
+    int x, l, r;
+    memset(g, 0, sizeof(g));
+    if (m == 0) return ;
+    if (m == 1) {
+        g[1][n] = 1;
+        return ;
+    }
+    FOR (i, 1, n) if (a[i] >= m) {
+        x = i;
+        break;
+    }
+    l = 2, r = x - 2 + l - 2;
+    m -= a[x - 1];
+    g[1][n] = 1;
+    FOR (i, l, r) g[1][i] = g[i][n] = 1;
+    FOR (i, l, r) FOR (j, i + 1, r) g[i][j] = 1;
+    LL t = a[x - 2];
+    //sc4(l, r, t, m);
+    if (m != 0) {
+        g[r + 1][n] = 1;
+        FORD (i, r, l) {
+            if (m >= t) g[i][r + 1] = 1, m -= t;
+            t >>= 1;
+        }
+        if (m != 0) g[1][r + 1] = 1;
+    }
+}
 
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    file_r("B-large-practice.in");
+    file_w("B-large.out");
+    int cas = 0;
+    init();
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        cin >> n >> m;
+        M = m;
+        printf("Case #%d: ", ++cas);
+        if (m > a[n]) {
+            puts("IMPOSSIBLE");
+            continue;
         }
+        puts("POSSIBLE");
+        gao();
+        FOR (i, 1, n) {
+            FOR (j, 1, n) cout << g[i][j];
+            cout << '\n';
+        }
+        FOR (k, 1, n) FOR (i, 1, n) FOR (j, 1, n) {
+            if (k != i && k != j && i != j) g[i][j] += g[i][k] * g[k][j];
+        }
+        if (g[1][n] != M) printf("%d FUCK\n", g[1][n]);
     }
     return 0;
 }

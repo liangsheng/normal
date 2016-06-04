@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,69 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 105;
+
+int n, m;
+char g[N][N];
+int dp[N][N][2];
+
+void getMin(int &x, int y) {
+    if (x == -1 || x > y) x = y;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+    int tmp;
+    scanf("%d %d", &n, &m);
+    rep (i, n) scanf("%s", g[i]);
+    memset(dp, -1, sizeof(dp));
+    dp[0][0][0] = 0;
+    rep (i, n) rep (j, m) rep (k, 2) {
+        if (dp[i][j][k] == -1) continue;
+        tmp = dp[i][j][k];
+
+        if (k == 0) {
+
+            if (j + 1 < m) {
+                if (g[i][j + 1] == '.') getMin(dp[i][j + 1][k], tmp);
+                else getMin(dp[i][j + 1][k], tmp + 1);
             }
-            x--;
+
+            if ((j + 1 == m) || (g[i][j + 1] == 'b')) tmp = dp[i][j][k];
+            else tmp = dp[i][j][k] + 1;
+            if (i + 1 < n) {
+                if (g[i + 1][j] == '.') getMin(dp[i + 1][j][k ^ 1], tmp);
+                else getMin(dp[i + 1][j][k ^ 1], tmp + 1);
+            }
+        } else {
+            if (i + 1 < n) {
+                if (g[i + 1][j] == '.') getMin(dp[i + 1][j][k], tmp);
+                else getMin(dp[i + 1][j][k], tmp + 1);
+            }
+
+            if ((i + 1 == n) || (g[i + 1][j] == 'b')) tmp = dp[i][j][k];
+            else tmp = dp[i][j][k] + 1;
+            if (j + 1 < m) {
+                if (g[i][j + 1] == '.') getMin(dp[i][j + 1][k ^ 1], tmp);
+                else getMin(dp[i][j + 1][k ^ 1], tmp + 1);
+            }
+
         }
     }
+    printf("%d\n", min(dp[n - 1][m - 1][0], dp[n - 1][m - 1][1]));
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

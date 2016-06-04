@@ -57,20 +57,52 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 2000000;
+
+int n;
+vi a[2];
+bool f[N + 5];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    FOR (i, 2, N) {
+        if (f[i]) continue;
+        for (LL j = (LL) i * i; j <= N; j += i) f[j] = 1;
+    }
+    int x;
+    scanf("%d", &n);
+    rep (i, n) {
+        scanf("%d", &x);
+        a[x % 2].pb(x);
+    }
+    int cnt = 0;
+    repit (it, a[1]) cnt += (*it == 1);
+    if (cnt >= 2) {
+        int flag = 0;
+        repit (it, a[0]) if (!f[*it + 1]) {
+            flag = *it;
+            break;
+        }
+        repit (it, a[1]) if (*it != 1 && !f[*it + 1]) {
+            flag = *it;
+            break;
+        }
+        if (flag) {
+            printf("%d\n", cnt + 1);
+            rep (i, cnt) printf("1 ");
+            printf("%d\n", flag);
+        } else {
+            printf("%d\n", cnt);
+            rep (i, cnt - 1) printf("1 ");
+            puts("1");
+        }
+        return 0;
+    }
+    repit (i, a[0]) repit (j, a[1]) {
+        if (!f[*i + *j]) {
+            printf("%d\n%d %d\n", 2, *i, *j);
+            return 0;
         }
     }
+    printf("1\n%d\n", x);
     return 0;
 }

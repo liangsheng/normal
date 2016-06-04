@@ -57,20 +57,58 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
-        }
+const int N = 16 + 5;
+
+int T, n, e;
+int L[N], R[N];
+map<string, int> q;
+
+bool gao(int i) {
+    rep (j, n) FOR (k, j + 1, n - 1) {
+        if (j == i || k == i) continue;
+        if (L[i] == L[j] && R[i] == R[k]) return 1;
+        if (L[i] == L[k] && R[i] == R[j]) return 1;
     }
     return 0;
 }
+
+int main() {
+    //cout << 16LL * 15 * 14 * 13 * 12 *11 * 10 * 9 * 8 * 7 << '\n' << 100000000;
+    //file_r("C-small-attempt1.in");
+    //file_w("C-small.out");
+    cout << (1LL << 16) * 16;
+    int cas = 0, x, y, ans;
+    string s0, s1;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        e = 0, q.clear();
+        rep (i, n) {
+            cin >> s0 >> s1;
+            if (!q.count(s0)) q[s0] = e++;
+            if (!q.count(s1)) q[s1] = e++;
+            L[i] = q[s0], R[i] = q[s1];
+        }
+        ans = 0;
+        rep (i, n) {
+            ans += gao(i);
+        }
+        if (ans > 14) ans = 14;
+        printf("Case #%d: %d\n", ++cas, ans);
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

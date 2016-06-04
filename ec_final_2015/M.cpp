@@ -78,9 +78,8 @@ int main() {
             x = j;
             while (j + 1 < m && !g[i][j + 1]) j++;
             y = j - x + 1;
-            if (y == 1) ans0++, ans1++;
-            else if (y % 2) ans0 += (y + 1) / 2, ans1 += (y - 1) / 2;
-            else ans0 += y / 2, ans1 += y / 2;
+            ans0 += ceil(1.0 * y / 2);
+            ans1 += ceil(1.0 * y / 3);
         }
         printf("Case #%d: %d %d\n", ++cas, ans0, ans1);
     }

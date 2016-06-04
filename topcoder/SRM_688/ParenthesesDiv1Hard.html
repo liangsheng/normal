@@ -1,0 +1,50 @@
+<html><body bgcolor="#000000" text="#00ff00"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>Correct parentheses sequences can be defined recursively as follows:
+<ul>
+<li>The empty string "" is a correct sequence.</li>
+<li>If "X" and "Y" are correct sequences, then "XY" (the concatenation of X and Y) is a correct sequence.</li>
+<li>If "X" is a correct sequence, then "(X)" is a correct sequence.</li>
+<li>Each correct parentheses sequence can be derived using the above rules.</li>
+</ul>
+Examples of correct parentheses sequences include "", "()", "()()()", "(()())", and "(((())))".<br></br>
+<br></br>
+<br></br>
+We can define the depth and the cost of a correct parentheses sequence recursively as follows:
+
+<ul>
+<li>The empty string "" has depth 0 and cost 0.</li>
+<li>Suppose that "S" = "(A)", where A is a correct parentheses sequence. Then we have depth(S) = depth(A)+1 and cost(S) = cost(A) + depth(S)^2.</li>
+<li>Suppose that "S" = "AB", where A and B are correct parentheses sequences. Then we have depth(S) = max(depth(A),depth(B)) and cost(S) = cost(A) + cost(B).</li>
+</ul>
+
+For example:
+<ul>
+<li>The depth of "(((())))" is 4, the depth of "()()()" is 1, and the depth of "(())()" is 2.</li>
+<li>The cost of "(((())))" is 4^2 + 3^2 + 2^2 + 1^2 = 30, the cost of "()()()" is 1^2 + 1^2 + 1^2 = 3, and the cost of "(())()" is 6.</li>
+</ul>
+
+Note that the depth and the cost of each correct parentheses sequence is uniquely defined using the above rules.
+For example, when evaluating the depth and cost of "()()()" it does not matter whether we take X = "()" and Y = "()()" or we take X = "()()" and Y = "()", the results will be the same in both cases.
+<br></br>
+<br></br>
+<br></br>
+You are given a string <b>s</b>.
+You are going to split <b>s</b> into two disjoint subsequences s1 and s2.
+(Each character of <b>s</b> must be used in exactly one of s1 and s2, and the original order of characters must be preserved in the new sequences.)
+<br></br>
+<br></br>
+<br></br>
+Your primary goal is to make sure that both s1 and s2 are correct parentheses sequences.
+If this goal cannot be achieved, return -1.
+<br></br>
+<br></br>
+<br></br>
+Your secondary goal is to make cost(s1) + cost(s2) as small as possible.
+Compute and return the smallest possible value of cost(s1) + cost(s2).</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>ParenthesesDiv1Hard</td></tr><tr><td>Method:</td><td>minCost</td></tr><tr><td>Parameters:</td><td>string</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int minCost(string s)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>4.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>Pay attention to the unusual time limit.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>s</b> will contain between 1 and 150 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>s</b> will be '(' or ')'.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;(())&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2">The optimal solution is to split <b>s</b> into s1 = s2 = "()".
+(For example, s1 will be the characters at indices 0 and 2 and s2 will be the characters at indices 1 and 3.)
+For this split we have cost(s1) = cost(s2) = 1.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;((())())(()()())&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: 11</pre></td></tr><tr><td><table><tr><td colspan="2">One optimal solution is:
+<pre>
+s  = ((())())(()()())
+s1 =   () ()  ()()() 
+s2 = ((  )  )(      )
+</pre>
+Cost(s1) = 5, Cost(s2) = 6.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;())(()&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: -1</pre></td></tr><tr><td><table><tr><td colspan="2">This <b>s</b> cannot be split into two correct sequences.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;(((((((((())))))))))&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: 110</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;()&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>&quot;(((())()()()((((()))))(((())))()()()))(()(()))&quot;</pre></td></tr></table></td></tr><tr><td><pre>Returns: 69</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

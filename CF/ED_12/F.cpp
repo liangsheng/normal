@@ -58,19 +58,18 @@ typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
-        }
-    }
+    cout << (~0U >> 1) << "\n100000000000";
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+

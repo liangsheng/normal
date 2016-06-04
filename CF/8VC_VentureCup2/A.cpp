@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,57 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 200005;
+
+int n;
+int a[N], b[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
+    int flag, p, e, x;
+    while (~scanf("%d", &n)) {
+        e = 0;
+        rep (i, n) {
+            scanf("%d", &x);
+            if (x != 0) a[e++] = x;
+        }
+        e = 0;
+        rep (i, n) {
+            scanf("%d", &x);
+            if (x != 0) b[e++] = x;
+        }
+        flag = 1;
+        rep (i, n - 1) if (b[i] == a[0]) {
+            p = i;
+            break;
+        }
+        rep (i, n - 1) {
+            if (a[i] != b[p]) {
+                flag = 0;
                 break;
             }
-            x--;
+            p = (p + 1) % (n - 1);
         }
+        puts(flag ? "YES" : "NO");
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -57,66 +57,80 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 1005;
+const int N = 1000005;
 
-int n, m;
-LL k, cnt;
-int g[N][N];
-pii a[N * N];
-bool f[N][N];
-int dx[4] = {-1, 0, 1, 0};
-int dy[4] = {0, 1, 0, -1};
+int n, m, tol;
+int f[N], b[N], c[N];
+pii a[N];
+vpii h;
+vi g[N];
 queue<pii> q;
 
-void bfs(int u, int v, int val) {
-    int x, y;
-    f[u][v] = 1, cnt++;
-    q.push(mp(u, v));
-    while (!q.empty()) {
-        u = q.front().X, v = q.front().Y, q.pop();
-        rep (i, 4) {
-            x = u + dx[i], y = v + dy[i];
-            if (x < 0 || x >= n || y < 0 || y >= m) continue;
-            if (g[x][y] < val) continue;
-            q.push(mp(x, y)), cnt++;
-        }
-    }
+void init() {
+    tol = n * m;
+    rep (i, tol) f[i] = i, g[i].clear();
+    memset(c, 0, sizeof(c));
+}
+
+int find(int x) {
+    return x == f[x] ? x : f[x] = find(f[x]);
 }
 
 int main() {
-    int id, x, y, flag;
-    while (cin >> n >> m >> k) {
+    int x, y, id;
+    while (~scanf("%d %d", &n, &m)) {
+        init();
         rep (i, n) rep (j, m) {
-            scanf("%d", &g[i][j]);
             id = i * m + j;
-            a[id] = mp(-g[i][j], id);
+            scanf("%d", &b[id]);
+            a[id] = mp(b[id], id);
         }
-        sort(a, a + n * m);
-        memset(f, 0, sizeof(f));
-        cnt = 0, falg = 0;
-        rep (th, n * m) {
-            id = a[th].Y, x = id / m, y = id % m;
-            bfs(x, y, g[x][y]);
-            if (k % g[x][y]) continue;
-            if (cnt >= (k / g[x][y])) {
-                flag = 1;
-                break;
+        sort(a, a + tol);
+        rep (i, tol) {
+            x = i;
+            while (i + 1 < tol && a[i + 1].X == a[i].X && a[i + 1].Y / m == a[i].Y / m) f[a[++i].Y] = x;
+        }
+        rep (i, n) {
+            h.clear();
+            rep (j, m) {
+                id = i * m + j;
+                h.pb(mp(b[id], id));
             }
+            sort(ALL(h));
+            rep (j, m - 1) {
+                if (h[j].X == h[j + 1].X) continue;
+                x = find(h[j].Y), y = find(h[j + 1].Y);
+                g[x].pb(y), c[y]++;//, sc2(x, y);
+            }
+        }
+        //puts("hhh");
+        rep (j, m) {
+            h.clear();
+            rep (i, n) {
+                id = i * m + j;
+                h.pb(mp(b[id], id));
+            }
+            sort(ALL(h));
+            rep (i, n - 1) {
+                if (h[i].X == h[i + 1].X) continue;
+                x = find(h[i].Y), y = find(h[i + 1].Y);
+                g[x].pb(y), c[y]++;//, sc2(x, y);
+            }
+        }
+        rep (i, tol) sc2(i, c[i]);
+        rep (i, tol) if (find(i) == i && c[i] == 0) q.push(mp(i, 1));
+        rep (i, tol) sc2(i, f[i]);
+        puts("FFFF");
+        while (!q.empty()) {
+            x = q.front().X, y = q.front().Y;
+            , q.pop(), b[x] = y;
+            //sc2(x, y);
+            repit (it, g[x]) if (--c[*it] == 0) q.push(mp(*it, y + 1));
+        }
+        rep (i, n) {
+            rep (j, m) printf("%d ", b[f[i * m + j]]);
+            puts("");
         }
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

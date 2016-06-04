@@ -32,8 +32,8 @@
 #define lb lower_bound
 #define ub upper_bound
 #define SZ(c) (c).size()
-#define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define Aint(c) (c).begin(), (c).end()
+#define sqr(r) ((int) (r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,73 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+int gao(int year1, int month1, int day1, int year2, int month2, int day2)   {
+    int nd, nm, ny; //new_day, new_month, new_year
+    int od, om, oy; //old_day, oldmonth, old_year
+
+    nm = (month2 + 9) % 12;
+    ny = year2 - nm/10;
+    nd = 365*ny + ny/4 - ny/100 + ny/400 + (nm*306 + 5)/10 + (day2 - 1);
+
+    om = (month1 + 9) % 12;
+    oy = year1 - om/10;
+    od = 365*oy + oy/4 - oy/100 + oy/400 + (om*306 + 5)/10 + (day1 - 1);
+
+    return od - nd;
+}
+
+const int N = 800 * 36 + 5;
+
+int e, tol;
+int Y[N], M[N], D[N], V[N], pos[N];
+int c[N][7];
+int dx[3] = {1, 11, 21};
+vi g[7];
+
+void init() {
+    int x;
+    e = 0, tol = 36 * 400;
+    rep (i, 800) FOR (j, 1, 12) rep (k, 3) {
+        Y[e] = i, M[e] = j, D[e] = dx[k];
+        x = gao(i, j, dx[k], 0, 1, 1) % 7;
+        //if (e == 587) sc4(Y[e], M[e], D[e], x);
+        V[e] = x;
+        c[e][x]++;
+        pos[e] = SZ(g[x]), g[x].pb(e);
+        if (e != 0) rep (l, 7) c[e][l] += c[e - 1][l];
+        e++;
+    }
+}
+
+int T;
+int y, m, d, n;
+
+void solve() {
+    int y1 = y % 400, m1 = m, d1 = d, cnt, mod, p;
+    int id = 36 * y1 + 3 * (m1 - 1);
+    rep (k, 3) {
+        if (dx[k] == d1) break;
+        id++;
+    }
+    //sc2(id, V[id]);
+    cnt = c[id + tol][V[id]] - c[id][V[id]];
+    //sc(cnt);
+    p = n / cnt, cnt = n % cnt;
+    //sc3(cnt, gao(16, 4, 11, 0, 1, 1) % 7, V[id]);
+    id = g[V[id]][pos[id] + cnt];
+    printf("%d %d %d\n", Y[id] - y1 + y + p * 400, M[id], D[id]);
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    //file_w("out.txt");
+    init();
+    scanf("%d", &T);
+    //T = 1000;
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
-        }
+        scanf("%d %d %d %d", &y, &m, &d, &n);
+        //y = 9999, m = 12, d = 21, n = 1000000000;
+        n--;
+        solve();
     }
     return 0;
 }

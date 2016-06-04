@@ -57,20 +57,60 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 100005, M = 9973;
+
+int n, m;
+int a[N << 2];
+char str[N];
+
+void init(int k, int s, int t) {
+    int mid = (s + t) >> 1;
+    if (s == t) a[k] = str[s] - 28;//, sc4(k, s, t, str[s] - 28);
+    else {
+        init(k << 1, s, mid);
+        init(k << 1 | 1, mid + 1, t);
+        a[k] = a[k << 1] * a[k << 1 | 1] % M;
+        //sc2(k, a[k]);
+    }
+}
+
+int gao(int k, int s, int t, int l, int r) {
+    int mid = (s + t) >> 1, ans = 1;
+    if (s > r || t < l) return 1;
+    if (s >= l && t <= r) return a[k];
+    ans = ans * gao(k << 1, s, mid, l, r) % M;
+    ans = ans * gao(k << 1 | 1, mid + 1, t, l, r) % M;
+    return ans;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    int x, y;
+    while (~scanf("%d", &m)) {
+        scanf("%s", str + 1);
+        n = strlen(str + 1);
+        init(1, 1, n);
+        while (m--) {
+            scanf("%d %d", &x, &y);
+            printf("%d\n", gao(1, 1, n, x, y));
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

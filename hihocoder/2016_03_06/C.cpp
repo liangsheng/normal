@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,66 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+const int N = 15, M = 105, D = 20005;
+const LL INF = ~0ULL >> 1;
+
+int T, n, m, k, t;
+int a[M], b[M];
+LL dp[D];
+LL ans;
+
+bool gao() {
+    int id;
+    LL res = INF;
+    FOR (i, 1, m) if (b[i] >= k) res = min(res, (LL) a[i]);
+    //sc(res);
+    memset(dp, -1, sizeof(dp));
+    dp[0] = 0;
+    FOR (i, 1, m) FOR (j, 0, 2 * k) {
+        if (dp[j] == -1) continue;
+        id = j + b[i];
+        if (id <= 2 * k) {
+            if (dp[id] == -1 || dp[id] > dp[j] + a[i]) dp[id] = dp[j] + a[i];
         }
+    }
+    FOR (i, k, 2 * k) if (dp[i] != -1) res = min(res, dp[i]);
+    //sc(res);
+    if (res == INF) return 0;
+    ans += res;
+    return 1;
+}
+
+int main() {
+    int flag;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d %d %d %d", &n, &m, &k, &t);
+        FOR (i, 1, m) scanf("%d", &a[i]);
+        FOR (i, 1, m) scanf("%d", &b[i]);
+        ans = 0,flag = 1;
+        rep (i, n) {
+            flag = gao();
+            if (!flag) break;
+            if (i != n - 1) FOR (j, 1, m) b[j] /= t;
+        }
+        if (!flag) puts("No Answer");
+        else cout << ans << '\n';
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

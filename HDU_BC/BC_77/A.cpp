@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,62 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 1005, MOD = 1000000007;
+
+int T, n;
+char s[N];
+int a[26];
+int fac[1005], inv[1005], facinv[1005];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int c0, c1, ans;
+    fac[0] = fac[1] = inv[1] = facinv[0] = facinv[1] = 1;
+    FOR (i, 2, 1000) {
+        fac[i] = (LL) fac[i - 1] * i % MOD;
+        inv[i] = (LL) inv[MOD % i] * (MOD - MOD / i) % MOD;
+        facinv[i] = (LL) facinv[i - 1] * inv[i] % MOD;
+    }
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        scanf("%s", s);
+        n = strlen(s);
+        memset(a, 0, sizeof(a));
+        rep (i, n) a[s[i] - 'a']++;
+        c0 = 0, ans = 1, c1 = 0;
+        rep (i, 26) {
+            if (a[i] == 0) continue;
+            if (a[i] % 2) c1++;
+            ans = (LL) ans * facinv[a[i] / 2] % MOD;
         }
+        if (c1 > 1) {
+            puts("0");
+            continue;
+        }
+        ans = (LL) ans * fac[n / 2] % MOD;
+        printf("%d\n", ans);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

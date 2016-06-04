@@ -57,20 +57,62 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 105;
+
+int T, n, m;
+char g[N][N];
+
+bool ok(int x, int y) {
+    return x >= 0 && x < n && y >= 0 && y < m;
+}
+
+void gao(int x, int y) {
+    //sc2(x, y);
+    if (ok(x, y) && g[x][y] == 'O') g[x][y] = '.';
+    //sc3(x, y, g[0]);
+    if (ok(x + 1, y - 1) && g[x + 1][y - 1] == '/') g[x + 1][y - 1] = '.';
+    if (ok(x + 1, y) && g[x + 1][y] == '|') g[x + 1][y] = '.';
+    if (ok(x + 1, y + 1) && g[x + 1][y + 1] == '\\') g[x + 1][y + 1] = '.';
+    if (ok(x + 2, y - 1) && g[x + 2][y - 1] == '(') g[x + 2][y - 1] = '.';
+    if (ok(x + 2, y + 1) && g[x + 2][y + 1] == ')') g[x + 2][y + 1] = '.';
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int ans;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        scanf("%d %d", &n, &m);
+        rep (i, n) scanf("%s", g[i]);
+        ans = 0;
+        rep (i, n) rep (j, m) {
+            if (g[i][j] == '.') continue;
+            ans++;
+            //cout << "iii= " << i << '\n' << j << '\n' << g[i][j];
+            if (g[i][j] == 'O') gao(i, j);
+            else if (g[i][j] == '/') gao(i - 1, j + 1);
+            else if (g[i][j] == '|') gao(i - 1, j);
+            else if (g[i][j] == '\\') gao(i - 1, j - 1);
+            else if (g[i][j] == '(') gao(i - 2, j + 1);
+            else if (g[i][j] == ')') gao(i - 2, j - 1);
+            //sc2(i, j);
+            //rep (ii, n) cout << g[ii] << '\n'; system("pause");
         }
+        printf("%d\n", ans);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

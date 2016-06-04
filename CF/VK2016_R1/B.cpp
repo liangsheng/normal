@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,88 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+const int N = 200005, M = 60;
+
+int n, m, ans;
+int a[N];
+int b[2][M + 5], c[2][M + 5];
+
+void gao(int x, int c, int id) {
+    LL y = x;
+    rep (i, M) {
+        if ((y >> i) & 1) {
+            b[id][c + i]++;
         }
+    }
+}
+
+void cal(int p) {
+    int l = 0;
+    LL t, tmp;
+    rep (k, 2) rep (i, M) {
+        c[k][i] += l;
+        l = c[k][i] / 2;
+        c[k][i] %= 2;
+    }
+    rep (i, M) c[1][i] ^= 1;
+    l = 1;
+    rep (i, M - 1) {
+        c[1][i] += l;
+        l = c[1][i] / 2;
+        c[1][i] %= 2;
+    }
+    l = 0;
+    rep (i, M) {
+        c[0][i] += l + c[1][i];
+        l = c[0][i] / 2;
+        c[0][i] %= 2;
+    }
+    if (c[0][M - 1] == 1) {
+        rep (i, M - 1) c[0][i] ^= 1;
+        l = 1;
+        rep (i, M - 1) {
+            c[0][i] += l;
+            l = c[0][i] / 2;
+            c[0][i] %= 2;
+        }
+    }
+    t = 1, tmp = 0;
+    rep (i, p) if (c[0][i]) return ;
+    FOR (i, p, M - 1) {
+        if (c[0][i]) tmp += t;
+        if (tmp > m) break;
+        t <<= 1;
+    }
+    if (tmp <= (LL) m && tmp != 0) ans++;
+}
+
+int main() {
+    LL x;
+    while (~scanf("%d %d", &n, &m)) {
+        n++;
+        rep (i, n) scanf("%d", &a[i]);
+        memset(b, 0, sizeof(b));
+        rep (i, n) {
+            if (a[i] > 0) gao(a[i], i, 0);
+            else gao(-a[i], i, 1);
+        }
+        ans = 0;
+        rep (i, n) {
+            rep (k, 2) rep (j, M) c[k][j] = b[k][j];
+            if (a[i] > 0) {
+                x = a[i];
+                rep (j, M) {
+                    if ((x >> j) & 1) c[1][j + i]++;
+                }
+            } else {
+                x = -a[i];
+                rep (j, M) {
+                    if ((x >> j) & 1) c[0][j + i]++;
+                }
+            }
+            cal(i);
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,96 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 200005;
+
+int n, k, a, b, q;
+int f[N], sb[N], sa[N], g[N];
+
+void init() {
+    memset(sb, 0, sizeof(sb));
+    memset(sa, 0, sizeof(sa));
+    memset(f, 0, sizeof(f));
+    memset(g, 0, sizeof(g));
+}
+
+void add_a(int x, int y) {
+    //cout << "x= " << x << ' ' << y << '\n';
+    while (x > 0) sa[x] += y, x -= lowbit(x);
+}
+
+int cal_a(int x) {
+    if (x > n) return 0;
+    int ans = 0;
+    while (x <= n) ans += sa[x], x += lowbit(x);
+    return ans;
+}
+
+void add_b(int x, int y) {
+    while (x <= n) sb[x] += y, x += lowbit(x);
+}
+
+int cal_b(int x) {
+    if (x < 1) return 0;
+    int ans = 0;
+    while (x > 0) ans += sb[x], x -= lowbit(x);
+    return ans;
+}
+
+void add_f(int x, int y) {
+    while (x <= n) f[x] += y, x += lowbit(x);
+}
+
+int cal_f(int x) {
+    if (x < 1) return 0;
+    int ans = 0;
+    while (x > 0) ans += f[x], x -= lowbit(x);
+    return ans;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+    int cmd, kth, x, p, tmp, sum, ans;
+    while (cin >> n >> k >> a >> b >> q) {
+        init();
+        sum = 0;
+        while (q--) {
+            cin >> cmd;
+            if (cmd == 1) {
+                cin >> kth >> x;
+                tmp = g[kth], sum += x;
+
+                add_f(kth, x);
+                g[kth] += x;
+
+                if (tmp >= a) add_a(kth, x);
+                else if (g[kth] > a) add_a(kth, g[kth] - a);
+
+                if (tmp >= b) add_b(kth, x);
+                else if (g[kth] > b) add_b(kth, g[kth] - b);
+            } else {
+                cin >> p;
+                //sc4(sum, cal_b(p - 1), p + k, cal_a(p + k));
+                ans = sum - (cal_f(p + k - 1) - cal_f(p - 1));
+                //sc(ans);
+                ans -= cal_b(p - 1) + cal_a(p + k);
+                cout << ans << '\n';
             }
-            x--;
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

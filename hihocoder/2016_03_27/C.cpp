@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,57 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 10005;
+
+int T, n, m, s, t;
+int a[N];
+int dp[2][N];
+
+void getMin(int &x, int y) {
+    if (x == -1 || x > y) x = y;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int now, pre, l, tmp, x;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+        scanf("%d %d %d %d", &n, &m, &s, &t);
+        FOR (i, 1, n) scanf("%d", &a[i]);
+        now = 0, pre = 1;
+        memset(dp[now], -1, sizeof(dp[now]));
+        dp[now][0] = 0;
+        rep (i, n) {
+            swap(now, pre);
+            memset(dp[now], -1, sizeof(dp[now]));
+            rep (j, m + 1) {
+                if (dp[pre][j] == -1) continue;
+                FOR (k, 0, 50) {   //cuo ti
+                    tmp = a[i + 1] - t * k;
+                    if (tmp <= 0) x = 0;
+                    else x = tmp / s + (tmp % s > 0);
+                    if (x + k + j > m) continue;
+                    getMin(dp[now][j + k + x], dp[pre][j] + x);
+                }
             }
-            x--;
         }
+        x = -1;
+        rep (j, m + 1) {
+            if (dp[now][j] == -1) continue;
+            if (x == -1 || dp[now][j] < dp[now][x]) x = j;
+        }
+        if (x == -1) puts("No");
+        else printf("%d\n", dp[now][x]);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+

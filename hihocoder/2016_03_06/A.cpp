@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,19 +57,38 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+int b[9];
+int a[8][9] = { {8, 1, 6, 3, 5, 7, 4, 9, 2},
+                {6, 1, 8, 7, 5, 3, 2, 9, 4},
+                {4, 9, 2, 3, 5, 7, 8, 1, 6},
+                {2, 9, 4, 7, 5, 3, 6, 1, 8},
+                {6, 7, 2, 1, 5, 9, 8, 3, 4},
+                {8, 3, 4, 1, 5, 9, 6, 7, 2},
+                {2, 7, 6, 9, 5, 1, 4, 3, 8},
+                {4, 3, 8, 9, 5, 1, 2, 7, 6} };
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
+    vi ans;
+    rep (i, 9) scanf("%d", &b[i]);
+    rep (i, 8) {
+        int flag = 1;
+        rep (j, 9) {
+            if (b[j] == 0) continue;
+            if (b[j] != a[i][j]) {
+                flag = 0;
                 break;
             }
-            x--;
+        }
+        if (flag) ans.pb(i);
+    }
+    int sz = SZ(ans);
+    if (sz > 1) puts("Too Many");
+    else {
+        int k = ans[0];
+        rep (i, 9) {
+            printf("%d", a[k][i]);
+            if (i % 3 == 2) printf("\n");
+            else printf(" ");
         }
     }
     return 0;

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,37 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 100005, M = 10005;
+
+int n, m;
+vector< pair<int, string> > q[M];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    string na;
+    int id, c;
+    while (cin >> n >> m) {
+        FOR (i, 1, m) q[i].clear();
+        rep (i, n) {
+            cin >> na >> id >> c;
+            q[id].pb(mp(-c, na));
+        }
+        FOR (i, 1, m) {
+            sort(ALL(q[i]));
+            c = q[i].size();
+            if (c < 3 || (q[i][1].X < q[i][2].X)) cout << q[i][0].Y << ' ' << q[i][1].Y << '\n';
+            else cout << '?' << '\n';
         }
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+

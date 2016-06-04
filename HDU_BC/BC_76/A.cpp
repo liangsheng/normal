@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,55 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
-        }
+const int MOD = 1000000007;
+
+LL extend_gcd(LL a, LL b, LL &x, LL &y) {
+    LL t, ret;
+    if (b==0) {
+        x = 1;
+        y = 0;
+        return a;
+    } else {
+        ret = extend_gcd(b,a%b,x,y);
+        t = x;
+        x = y;
+        y = t - a / b * y;
+        return ret;
     }
+}
+
+LL gao(LL z) {
+    LL x, y;
+    extend_gcd(z, MOD, x, y);
+    if (x < 0) x += (-x) / MOD * MOD;
+    while (x < 0) x += MOD;
+    return x % MOD;
+}
+
+int T;
+LL n, k;
+
+int main() {
+//    cout << 100001LL * 100000 / 2 << '\n' << 1000000000;
+    int n = 92, ans = 0, a[10];
+    FOR (i, 1, n) FOR (j, i + 1, n) FOR (k, j + 1, n) FOR (l, k + 1, n) {
+        if (i + j + k + l != n) continue;
+        int tmp = i * j * k * l;
+        if (tmp > ans) ans = tmp, a[0] = i, a[1] = j, a[2] = k, a[3] = l;
+    }
+    sc4(a[0], a[1], a[2], a[3]);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

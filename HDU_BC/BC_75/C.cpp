@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,48 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 2005, MOD = 1000000007, CH = 26, M = 3;
+
+int T, n;
+int dp[N][CH][M];
+int res[N];
+
+inline void add(int &x, int y) {
+    x = ((LL) x + y) % MOD;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    rep (i, CH) dp[1][i][0] = 1;
+    FOR (i, 1, 1999) rep (j, CH) {
+        rep (k, 2) rep (p, CH) {
+            if (p == j) add(dp[i + 1][p][k + 1], dp[i][j][k]);
+            else add(dp[i + 1][p][0], dp[i][j][k]);
         }
+        rep (p, CH) if (p != j) add(dp[i + 1][p][0], dp[i][j][2]);
+    }
+    FOR (i, 1, 2000) {
+        rep (j, CH) rep (k, M) add(res[i], dp[i][j][k]);
+    }
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        printf("%d\n", res[n]);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

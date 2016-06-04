@@ -57,20 +57,56 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 200005, M = N * 3;
+
+int n, m, e;
+int a[N];
+int b[M], c[M];
+int L[N], R[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+    int x, u, v;
+    while (~scanf("%d", &n)) {
+        e = 0;
+        FOR (i, 1, n) scanf("%d", &a[i]), b[e++] = a[i];
+        scanf("%d", &m);
+        FOR (i, 1, m) scanf("%d", &L[i]), b[e++] = L[i];
+        FOR (i, 1, m) scanf("%d", &R[i]), b[e++] = R[i];
+        sort(b, b + e);
+        e = unique(b, b + e) - b;
+        FOR (i, 1, n) a[i] = lower_bound(b, b + e, a[i]) - b;
+        FOR (i, 1, m) {
+            L[i] = lower_bound(b, b + e, L[i]) - b;
+            R[i] = lower_bound(b, b + e, R[i]) - b;
         }
+        memset(c, 0, sizeof(c));
+        FOR (i, 1, n) c[a[i]]++;
+        x = -1;
+        FOR (i, 1, m) {
+            if (x == -1) {
+                x = i;
+                continue;
+            }
+            u = c[L[i]], v = c[R[i]];
+            //sc4(u, v, c[L[x]], c[R[x]]);
+            if ((u > c[L[x]]) || (u == c[L[x]] && v > c[R[x]])) x = i;
+        }
+        printf("%d\n", x);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

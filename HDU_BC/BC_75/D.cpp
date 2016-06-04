@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,51 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+const int N = 5005;
+
+int f[N];
+
+int gao(int n) {
+    int p = -1, cnt;
+    memset(f, 0, sizeof(f));
+    FOR (i, 1, n - 1) {
+        cnt = i;
+        while (cnt > 0) {
+            cnt--;
+            while (1) {
+                ++p;
+                if (p == n) p = 0;
+                if (f[p] == 1) continue;
+                else break;
             }
-            x--;
         }
+        f[p] = 1;
+    }
+    rep (i, n) if (!f[i]) return i + 1;
+}
+
+int main() {
+    //FOR (i, 1, 100) cout << i << ' ' << gao(i) << '\n';
+    //file_w("in.txt");
+    //FOR (i, 1, 5000) cout << "f[" << i << "] = " << gao(i) << ";" << '\n';
+    int T, n, x;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        x = 0;
+        FOR (i, 2, n) x = (n - i + 1 + x) % i;
+        printf("%d\n", x + 1);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+

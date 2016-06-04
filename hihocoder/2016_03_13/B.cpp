@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,83 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+const int N = 1005, INF = 2139062143;
+
+int n, w, h;
+pii p[N][2];
+vi g[N];
+int dp[N], f[N], ok[N];
+queue<int> q;
+
+bool gao(pii p0, int id) {
+    int flag = 1;
+    FOR (i, id, n - 1) {
+        if (p[i][0].X <= p0.X && p0.X + 1 <= p[i][1].X && p[i][0].Y <= p0.Y && p0.Y + 1 <= p[i][1].Y) {
+            flag = 0;
+            break;
         }
+    }
+    return flag;
+}
+
+void bfs(int p) {
+    memset(f, 0, sizeof(f));
+    f[p] = 1, q.push(p);
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        repit (it, g[u]) {
+            int v = *it;
+            if (!f[v]) f[v] = 1, q.push(v);
+        }
+    }
+    dp[p] = 0;
+    rep (i, n) dp[p] += f[i];
+}
+
+int main() {
+    int t;
+    while (~scanf("%d %d %d", &w, &h, &n)) {
+        rep (i, n) rep (j, 2) scanf("%d %d", &p[i][j].X, &p[i][j].Y);
+
+        rep (i, n) g[i].clear();
+        rep (i, n) {
+            FOR (j, i + 1, n - 1) {
+                if (p[i][0].X >= p[j][1].X) continue;
+                if (p[i][1].X <= p[j][0].X) continue;
+                if (p[i][0].Y >= p[j][1].Y) continue;
+                if (p[i][1].Y <= p[j][0].Y) continue;
+                g[i].pb(j);
+            }
+        }
+
+        memset(ok, 0, sizeof(ok));
+        FORD (i, n - 1, 0) {
+            if (gao(mp(p[i][0].X, p[i][0].Y), i + 1)) ok[i] = 1;
+            else if (gao(mp(p[i][0].X, p[i][1].Y - 1), i + 1)) ok[i] = 1;
+            else if (gao(mp(p[i][1].X - 1, p[i][0].Y), i + 1)) ok[i] = 1;
+            else if (gao(mp(p[i][1].X - 1, p[i][1].Y - 1), i + 1)) ok[i] = 1;
+        }
+
+        //rep (i, n) sc2(i, ok[i]);
+        t = n - 1, dp[n - 1] = 1;
+        memset(f, 0, sizeof(f));
+        FORD (i, n - 2, 0) {
+            if (!ok[i]) continue;
+            bfs(i);
+            if (t == -1 || dp[i] > dp[t]) t = i;
+        }
+        printf("%d %d\n", dp[t], t + 1);
     }
     return 0;
 }
+/*
+10 10 5
+1 1 4 4
+0 0 2 2
+3 3 5 5
+0 3 2 5
+3 0 5 2*/
+
+
+

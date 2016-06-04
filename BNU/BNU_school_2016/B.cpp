@@ -57,20 +57,73 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 100005;
+
+int T, n, m;
+int a[N], b[N], f[N];
+LL c[N];
+
+void init() {
+    memset(c, 0, sizeof(c));
+}
+
+void add(int x, int y) {
+    //sc2(x, y);
+    for (; x <= n; x += lowbit(x)) c[x] += y;
+}
+
+LL cal(int x) {
+    LL ans = 0;
+    for (; x > 0; x -= lowbit(x)) ans += c[x];
+    return ans;
+}
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    int cmd, x, y, ans;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
-            }
-            x--;
+        scanf("%d", &n);
+        FOR (i, 1, n) scanf("%d", &a[i]);
+        init();
+        FOR (i, 1, n) {
+            add(i, a[a[i]]);
+            b[i] = a[a[i]];
+            f[a[i]] = i;
         }
+        scanf("%d", &m);
+        while (m--) {
+            scanf("%d %d %d", &cmd, &x, &y);
+            if (cmd == 2) printf("%lld\n", cal(y) - cal(x - 1));
+            else {
+                if (x == y) continue;
+                swap(a[x], a[y]);
+                add(x, -b[x]), add(x, a[a[x]]), b[x] = a[a[x]];
+                add(y, -b[y]), add(y, a[a[y]]), b[y] = a[a[y]];
+                if (f[x] != x && f[x] != y) {
+                    add(f[x], -b[f[x]]);
+                    add(f[x], a[x]);
+                    b[f[x]] = a[x];
+                }
+                if (f[y] != x && f[y] != y) {
+                    add(f[y], -b[f[y]]);
+                    add(f[y], a[y]);
+                    b[f[y]] = a[y];
+                }
+                swap(f[a[x]], f[a[y]]);
+            }
+        }
+        //FOR (i, 1, n) sc2(i, f[i]);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -57,20 +57,51 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 31, M = 1005;
+
+int T, n;
+int a[N];
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
+    file_r("A-large.in");
+    file_w("A-small.out");
+    int cas = 0, m0, m1, x, c;
+    scanf("%d", &T);
     while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
+        scanf("%d", &n);
+        FOR (i, 1, n) scanf("%d", &a[i]);
+        printf("Case #%d:", ++cas);
         while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+            x = -1, m0 = -1, m1 = -1, c = 0;
+            FOR (i, 1, n) {
+                if (a[i] > x) x = a[i], m0 = i, m1 = -1, c = 1;
+                else if (a[i] == x) m1 = i, c++;
             }
-            x--;
+            if (x == 0) break;
+            cout << ' ';
+            if (x == 1 && c == 3) cout << char(m0 + 'A' - 1), a[m0]--;
+            else {
+                if (m0 != -1) cout << char(m0 + 'A' - 1), a[m0]--;
+                if (m1 != -1) cout << char(m1 + 'A' - 1), a[m1]--;
+            }
+            int sum = 0;
+            FOR (i, 1, n) sum += a[i];
+            FOR (i, 1, n) if (a[i] * 2 > sum) puts("FUCK");
         }
+        puts("");
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,48 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 41;
+
+LL s, x;
+
 int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+    LL ans, d0, d1, ts, tx, n0, n1;
+    while (cin >> s >> x) {
+        d0 = 1, d1 = 0, ans = 0;
+        rep (i, N) {
+            ts = (s >> i) & 1;
+            tx = (x >> i) & 1;
+            n0 = n1 = 0;
+            if (tx == 1) {
+                if (ts == 0) n1 += 2 * d1;
+                else if (ts == 1) n0 += 2 * d0;
+            } else if (tx == 0) {
+                if (ts == 0) n0 += d0, n1 += d0;
+                else if (ts == 1) n0 += d1, n1 += d1;
             }
-            x--;
+            d0 = n0, d1 = n1;
         }
+        if (s == x) d0 -= 2;
+        cout << d0 << '\n';
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

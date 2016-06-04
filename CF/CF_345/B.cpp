@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,78 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
+const int N = 500005;
+
+int n, a, b, t, ans;
+char s[N];
+int d[N], f[N];
+
+void gao() {
+    int now, id = 2, tmp;
+    f[n] = d[n];
+    FORD (i, n - 1, 1) f[i] = f[i + 1] + a + d[i];
+    now = 0;
+    FOR (i, 1, n) {
+        if (i == 1) now += d[1];
+        else now += a + d[i];
+        if (now > t) break;
+        while (id > 1 && now + i * a + f[id] > t) {
+            id++;
+            if (id == n + 1) {
+                id = 1;
                 break;
             }
-            x--;
         }
+        //sc2(i, id);
+        if (id == 1) ans = max(ans, i);
+        else ans = max(ans, i + n - id + 1);
+    }
+}
+
+int main() {
+    int tol, l, r, mid;
+    while (~scanf("%d %d %d %d", &n, &a, &b, &t)) {
+        scanf("%s", s + 1);
+        tol = 0;
+        FOR (i, 1, n) {
+            if (s[i] == 'w') d[i] = b + 1;
+            else d[i] = 1;
+            tol += d[i];
+        }
+        tol += (n - 1) * a;
+        if (t >= tol) {
+            printf("%d\n", n);
+            continue;
+        }
+        if (d[1] > t) {
+            puts("0");
+            continue;
+        }
+        ans = 1;
+        //FOR (i, 1, n) sc2(i, d[i]);
+        gao();
+        FOR (i, 2, (n + 1) / 2) swap(d[i], d[n + 2 - i]);
+        //puts("DDDDD");
+        gao();
+        printf("%d\n", ans);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 #include <cmath>
-#define eps 1e-8
+#include <cfloat>
 #define zero(x) (((x)>0?(x):-(x))<eps)
 
 #define pause cout << " press ansy key to continue...",  cin >> chh
@@ -33,7 +33,7 @@
 #define ub upper_bound
 #define SZ(c) (c).size()
 #define ALL(c) (c).begin(), (c).end()
-#define sqr(r) ((LL) (r) * (r))
+#define sqr(r) ((r) * (r))
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
@@ -57,20 +57,80 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int main() {
-    //cout << 1414220000LL * (1414220001LL) / 2 << '\n' << 1000000000000000000 << '\n' << (~0ULL >> 1);
-    LL cas = 0, x, n, T;
-    cin >> T;
-    while (T--) {
-        cin >> n;
-        x = floor(sqrt(2 * n + 0.25) - 0.5) + 5;
-        while (1) {
-            if (x * (x + 1) / 2 <= n) {
-                cout << "Case #" << ++cas << ": " << x * (x + 1) / 2 << '\n';
-                break;
+const int N = 505;
+
+int T, n, m, q;
+char g[N][N];
+int t[N][N];
+bool f[N][N];
+queue<pii> h;
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
+
+bool judge(int i, int j, int tim) {
+    if (g[i][j] == '1') return 1;
+    if (t[i][j] != -1 && t[i][j] <= tim) return 1;
+    return 0;
+}
+
+bool ok(int tim) {
+    int u, v, x, y;
+    memset(f, 0, sizeof(f));
+    rep (i, 1) rep (j, m) {
+        if (judge(i, j, tim)) continue;
+        if (f[i][j]) continue;
+        h.push(mp(i, j));
+        while (!h.empty()) {
+            x = h.front().X, y = h.front().Y, h.pop();
+            rep (i, 4) {
+                u = x + dx[i], v = y + dy[i];
+                if (u < 0 || u >= n || v < 0 || v >= m) continue;
+                if (judge(u, v, tim)) continue;
+                if (f[u][v]) continue;
+                f[u][v] = 1;
+                h.push(mp(u, v));
             }
-            x--;
         }
+    }
+    rep (j, m) if (f[n - 1][j]) return 1;
+    return 0;
+}
+
+int main() {
+    int x, y, l, r, mid, ans;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d %d", &n, &m);
+        rep (i, n) scanf("%s", g[i]);
+        memset(t, -1, sizeof(t));
+        scanf("%d", &q);
+        rep (i, q) {
+            scanf("%d %d", &x, &y);
+            t[x][y] = i + 1;
+        }
+        l = 0, r = q;
+        while (l != r) {
+            mid = (l + r) >> 1;
+            if (ok(mid)) l = mid + 1;
+            else r = mid;
+        }
+        if (ok(l)) puts("-1");
+        else printf("%d\n", l);
     }
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
