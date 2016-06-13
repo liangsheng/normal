@@ -57,71 +57,30 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int gao(LL x) {
-    int ans = 0;
-    LL l, r, mid, sum = 0;
-    while (x != 0) {
-        l = 1, r = ceil(sqrt(x));
-        while (l != r) {
-            mid = (l + r) >> 1, mid++;
-            if (mid * mid >= x) r = mid - 1;
-            else {
-                if (mid * mid * mid <= x) l = mid;
-                else r = mid - 1;
-            }
-        }
-        //cout << l << ' ';
-        sum += l * l * l;
-        ans++;
-        x -= l * l * l;
-    }
-    //sc2(ans, sum);
-    //cout << 7926744LL * 7926744 * 7926744 << '\n' << 999999993541753LL << '\n';
-    //cout << 7926743LL * 7926743 * 7926743 << '\n';
-    return ans;
-}
+const int N = 18;
 
-LL get(LL x) {
-    LL l, r, mid;
-    l = 1, r = ceil(x) + 1;
-    while (l != r) {
-        mid = (l + r) >> 1;
-        if (mid * mid >= x) r = mid;
-        else {
-            if (mid * mid * mid >= x) r = mid;
-            else l = mid + 1;
-        }
-    }
-    return l;
-}
+int n;
+double p[N][N], dp[1 << N][N];
 
-LL n;
+void getMax(double &x, double y) {
+
+}
 
 int main() {
-    gao(200355);
-    //cout << (1000000000000000LL - 99999LL * 99999 * 99999);
-    int tim, t;
-    LL x, tmp, y, z;
-    while (cin >> n) {
-//        if (n <= 100000) {
-            tim = -1, x = 0;
-            for (LL i = n; i >= 1; i--) {
-                t = gao(i);
-                if (t > tim) tim = t, x = i;
-                sc2(i, t);
-            }
-            cout << tim << ' ' << x << '\n';
-//        } else {
-//            tim = 9, tmp = 23;
-//            while (tmp <= n) {
-//                y = get(tmp);
-//                z = y * y * y + tmp;
-//                if (z > n) break;
-//                //sc2(y, z);
-//                tim++, tmp = z;
-//            }
-//            cout << tim << '\n';
-//        }
+    int st;
+    scanf("%d", &n);
+    rep (i, n) rep (j, n) scanf("%lf", &p[i][j]);
+    st = 1 << n;
+    rep (i, n) FOR (j, i + 1, n - 1) {
+        dp[(1 << i) | (1 << j)][i] = p[i][j];
+        dp[(1 << i) | (1 << j)][j] = p[j][i];
+    }
+    FOR (i, 1, st - 1) rep (j, n) {
+        if ((i >> j) & 1 == 0) continue;
+        rep (k, n) {
+            if (k == i || k == j) continue;
+
+        }
     }
     return 0;
 }

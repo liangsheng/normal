@@ -57,86 +57,55 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-int gao(LL x) {
-    int ans = 0;
-    LL l, r, mid, sum = 0;
-    while (x != 0) {
-        l = 1, r = ceil(sqrt(x));
-        while (l != r) {
-            mid = (l + r) >> 1, mid++;
-            if (mid * mid >= x) r = mid - 1;
-            else {
-                if (mid * mid * mid <= x) l = mid;
-                else r = mid - 1;
-            }
-        }
-        //cout << l << ' ';
-        sum += l * l * l;
-        ans++;
-        x -= l * l * l;
+const LL MOD = 1000000007;
+
+LL n, a, b, x;
+
+LL extend_gcd(LL a, LL b, LL &x, LL &y) {
+    LL t, ret;
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    } else {
+        ret = extend_gcd(b,a%b,x,y);
+        t = x;
+        x = y;
+        y = t - a / b * y;
+        return ret;
     }
-    //sc2(ans, sum);
-    //cout << 7926744LL * 7926744 * 7926744 << '\n' << 999999993541753LL << '\n';
-    //cout << 7926743LL * 7926743 * 7926743 << '\n';
+}
+
+LL cal(LL a, LL M) {
+    LL x, y;
+    extend_gcd(a, M, x, y);
+    if (x < 0) x += (-x) / M * M;
+    while (x < 0) x += M;
+    return x;
+}
+
+LL power(LL x, LL y) {
+    LL ans = 1;
+    while (y) {
+        if (y & 1) ans = ans * x % MOD;
+        x = x * x % MOD;
+        y >>= 1LL;
+    }
     return ans;
 }
 
-LL get(LL x) {
-    LL l, r, mid;
-    l = 1, r = ceil(x) + 1;
-    while (l != r) {
-        mid = (l + r) >> 1;
-        if (mid * mid >= x) r = mid;
-        else {
-            if (mid * mid * mid >= x) r = mid;
-            else l = mid + 1;
-        }
-    }
-    return l;
-}
-
-LL n;
-
 int main() {
-    gao(200355);
-    //cout << (1000000000000000LL - 99999LL * 99999 * 99999);
-    int tim, t;
-    LL x, tmp, y, z;
-    while (cin >> n) {
-//        if (n <= 100000) {
-            tim = -1, x = 0;
-            for (LL i = n; i >= 1; i--) {
-                t = gao(i);
-                if (t > tim) tim = t, x = i;
-                sc2(i, t);
-            }
-            cout << tim << ' ' << x << '\n';
-//        } else {
-//            tim = 9, tmp = 23;
-//            while (tmp <= n) {
-//                y = get(tmp);
-//                z = y * y * y + tmp;
-//                if (z > n) break;
-//                //sc2(y, z);
-//                tim++, tmp = z;
-//            }
-//            cout << tim << '\n';
-//        }
+    LL an, res;
+    while (cin >> a >> b >> n >> x) {
+        if (a == 1) {
+            cout << (x + n % MOD * b) % MOD << '\n';
+        } else {
+            an = power(a, n);
+            res = (an * b % MOD - b + MOD) % MOD;
+            res = res * cal(a - 1, MOD) % MOD;
+            res = (an * x % MOD + res) % MOD;
+            cout << res << '\n';
+        }
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
