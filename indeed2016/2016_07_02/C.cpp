@@ -57,45 +57,67 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 18;
+const int N = 6;
 
-int n;
-double p[N][N], dp[1 << N][N];
+int n, m, ans;
+int a[20][3] = {0, 1, 2,
+                0, 1, 3,
+                0, 1, 4,
+                0, 1, 5,
+                0, 2, 3,
+                0, 2, 4,
+                0, 2, 5,
+                0, 3, 4,
+                0, 3, 5,
+                0, 4, 5,
+                1, 2, 3,
+                1, 2, 4,
+                1, 2, 5,
+                1, 3, 4,
+                1, 3, 5,
+                1, 4, 5,
+                2, 3, 4,
+                2, 3, 5,
+                2, 4, 5,
+                3, 4, 5};
+char g[N][N];
+int r[N], c[N];
 
-void add(double &x, double y) {
-    x += y;
+void dfs(int x) {
+    //sc(x);
+    if (x == 6) {
+        ans++;
+        return ;
+    }
+    int flag, u = x, y, dx, dy;
+    rep (i, m) {
+        flag = 1, dx = 0, dy = 0;
+        rep (j, 3) {
+            y = a[i][j];
+            if (g[x][y] == 'o') continue;
+            r[x]++, c[y]++;
+        }
+        if (r[x] <= 3 && c[0] <= 3 && c[1] <= 3 && c[2] <= 3 && c[3] <= 3 && c[4] <= 3 && c[5] <= 3) {
+            dfs(x + 1);
+        }
+        rep (j, 3) {
+            y = a[i][j];
+            if (g[x][y] == 'o') continue;
+            r[x]--, c[y]--;
+        }
+    }
 }
 
 int main() {
-    int st, t;
-    double ans, tmp;
-    scanf("%d", &n);
-    rep (i, n) rep (j, n) scanf("%lf", &p[i][j]);
-    st = 1 << n;
-    rep (i, n) FOR (j, i + 1, n - 1) {
-        dp[(1 << i) | (1 << j)][i] = p[i][j];
-        dp[(1 << i) | (1 << j)][j] = p[j][i];
+    n = 6, m = 20, ans = 0;
+    rep (i, n) scanf("%s", g[i]);
+    memset(r, 0, sizeof(r));
+    memset(c, 0, sizeof(c));
+    rep (i, n) rep (j, n) {
+        if (g[i][j] == 'o') r[i]++, c[j]++;
     }
-    FOR (i, 1, st - 1) rep (j, n) {
-        if (dp[i][j] == 0) continue;
-        rep (k, n) {
-            if ((i >> k) & 1) continue;
-            t = i | (1 << k);
-            add(dp[t][j], p[j][k]);
-            add(dp[t][k], p[k][j]);
-        }
-    }
-    ans = 0;
-    FOR (i, 1, st - 1) {
-        if (dp[i][0] == 0) continue;
-        tmp = dp[i][0];
-        rep (j, n) {
-            if ((i >> j) & 1) continue;
-            tmp *= p[0][j];
-        }
-        ans = max(ans, tmp);
-    }
-    printf("%.8f\n", ans);
+    dfs(0);
+    printf("%d\n", ans);
     return 0;
 }
 

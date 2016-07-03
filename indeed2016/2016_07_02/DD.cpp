@@ -57,59 +57,35 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 18;
-
-int n;
-double p[N][N], dp[1 << N][N];
-
-void add(double &x, double y) {
-    x += y;
-}
+int a[] = {3, 6, 4, 2, 5, 6, 8, 3, 1, 6};
+double sum = 44;
+int po_sum[1024];
+double na_sum[1024];
+double rst[1024];
 
 int main() {
-    int st, t;
-    double ans, tmp;
-    scanf("%d", &n);
-    rep (i, n) rep (j, n) scanf("%lf", &p[i][j]);
-    st = 1 << n;
-    rep (i, n) FOR (j, i + 1, n - 1) {
-        dp[(1 << i) | (1 << j)][i] = p[i][j];
-        dp[(1 << i) | (1 << j)][j] = p[j][i];
+    for (int i = 0; i != 1024; ++i) {
+        int s1 = 0;
+        double s2 = 0;
+        for (int k = 0; k != 10; ++k) {
+            if (i & 1 << k) {
+                s1 += a[k];
+                s2 += 1.0 / a[k];
+            }
+        }
+        po_sum[i] = s1;
+        na_sum[i] = s2;
     }
-    FOR (i, 1, st - 1) rep (j, n) {
-        if (dp[i][j] == 0) continue;
-        rep (k, n) {
-            if ((i >> k) & 1) continue;
-            t = i | (1 << k);
-            add(dp[t][j], p[j][k]);
-            add(dp[t][k], p[k][j]);
+//    for (int i = 0; i != 10; ++i) {
+//        rst[1 << i] = sum / a[i];
+//    }
+    for (int i = 0; i != 1024; ++i) {
+        for (int k = 0; k != 10; ++k) {
+            if (i & 1 << k) {
+                rst[i] += (rst[i ^ 1 << k] * (po_sum[i] - a[k]) / sum + sum / a[k]) / a[k] / na_sum[i];
+            }
         }
     }
-    ans = 0;
-    FOR (i, 1, st - 1) {
-        if (dp[i][0] == 0) continue;
-        tmp = dp[i][0];
-        rep (j, n) {
-            if ((i >> j) & 1) continue;
-            tmp *= p[0][j];
-        }
-        ans = max(ans, tmp);
-    }
-    printf("%.8f\n", ans);
+    printf("%.10f\n", rst[1023]);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

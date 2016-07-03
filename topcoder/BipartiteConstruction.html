@@ -1,0 +1,30 @@
+<html><body bgcolor="#000000" text="#00ff00"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>You are given a single int <b>K</b>.
+Your task is to construct any bipartite graph with the following properties:
+<ul>
+<li>The graph must contain n white and n black vertices, where n is between 1 and 20, inclusive. The white vertices must be numbered 0 through n-1, and the black vertices must also be numbered 0 through n-1.</li>
+<li>The graph must contain between 0 and 120 edges, inclusive.</li>
+<li>Each edge of the graph must connect a white and a black vertex.</li>
+<li>The number of different perfect matchings in the graph must be exactly <b>K</b>. Note that a perfect matching in a graph is a set of edges of the graph that contains each vertex exactly once.</li>
+</ul>
+
+Note that each pair of differently-colored vertices may be connected by arbitrarily many edges.
+These edges are all considered distinct.<br></br>
+
+Return a vector &lt;int&gt; with the description of the graph you constructed.
+This vector &lt;int&gt; should have m+1 elements, where m is the number of edges in your graph.
+Element 0 of the return value should be n.
+Each of the other elements should encode one edge of your graph.
+An edge that connects the i-th white vertex and the j-th black vertex is encoded as the integer (i*n + j).<br></br>
+
+It is guaranteed that for the given constraints a solution always exists.
+If there are multiple solutions, you may return any of them.<br></br></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>BipartiteConstruction</td></tr><tr><td>Method:</td><td>construct</td></tr><tr><td>Parameters:</td><td>int</td></tr><tr><td>Returns:</td><td>vector &lt;int&gt;</td></tr><tr><td>Method signature:</td><td>vector &lt;int&gt; construct(int K)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>A perfect matching in a graph is a set of edges of the graph that contains each vertex exactly once.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>K</b> will be between 0 and 1,000,000,000, inclusive.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>2</pre></td></tr></table></td></tr><tr><td><pre>Returns: {3, 8, 1, 7, 4, 3, 0 }</pre></td></tr><tr><td><table><tr><td colspan="2">The edges are (2,2), (0,1), (2,1), (1,1), (1,0), (0,0). It has two different perfect matchings: {(2,2), (0,1), (1,0)} and {(2,2), (1,1), (0,0)}.
+</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>5</pre></td></tr></table></td></tr><tr><td><pre>Returns: {1, 0, 0, 0, 0, 0 }</pre></td></tr><tr><td><table><tr><td colspan="2">This return value describes a graph with a single white vertex and a single black vertex.
+These vertices are connected by five distinct edges.
+Each of these edges forms a perfect matching in our graph.
+</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>0</pre></td></tr></table></td></tr><tr><td><pre>Returns: {2, 1, 0 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>2333333</pre></td></tr></table></td></tr><tr><td><pre>Returns: 
+{20, 93, 195, 195, 211, 87, 114, 369, 390, 216, 195, 305, 17, 370, 356,
+ 308, 150, 263, 20, 153, 331, 79, 344, 108, 114, 257, 245, 289, 211, 388,
+ 388, 359, 293, 263, 219, 131, 201, 293, 279, 204, 97, 367, 90, 279, 308,
+ 324, 323, 359, 338, 63, 26, 318, 218, 226, 164, 361, 276, 388, 343, 149,
+ 17, 336, 88, 161, 76, 237, 136, 278, 302, 107, 271, 15, 382, 45, 338,
+ 264, 78, 150, 220, 341, 180, 20, 252, 94, 114, 161 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>

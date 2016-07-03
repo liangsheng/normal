@@ -57,59 +57,46 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 18;
+const int N = 100005;
 
-int n;
-double p[N][N], dp[1 << N][N];
-
-void add(double &x, double y) {
-    x += y;
-}
+int T;
+int a, b, c;
 
 int main() {
-    int st, t;
-    double ans, tmp;
-    scanf("%d", &n);
-    rep (i, n) rep (j, n) scanf("%lf", &p[i][j]);
-    st = 1 << n;
-    rep (i, n) FOR (j, i + 1, n - 1) {
-        dp[(1 << i) | (1 << j)][i] = p[i][j];
-        dp[(1 << i) | (1 << j)][j] = p[j][i];
-    }
-    FOR (i, 1, st - 1) rep (j, n) {
-        if (dp[i][j] == 0) continue;
-        rep (k, n) {
-            if ((i >> k) & 1) continue;
-            t = i | (1 << k);
-            add(dp[t][j], p[j][k]);
-            add(dp[t][k], p[k][j]);
+    int x, y, z, u, v, w, t, ans;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d %d %d", &a, &b, &c);
+        u = a / 4;
+        v = b / 4;
+        w = c / 1;
+        t = min(min(u, v), w);
+        ans = t * 3;
+        a -= t * 4;
+        b -= t * 4;
+        c -= t * 1;
+        if (a == 0 || b == 0) {
+            printf("%d\n", ans);
+            continue;
         }
-    }
-    ans = 0;
-    FOR (i, 1, st - 1) {
-        if (dp[i][0] == 0) continue;
-        tmp = dp[i][0];
-        rep (j, n) {
-            if ((i >> j) & 1) continue;
-            tmp *= p[0][j];
+        if (c != 0) {
+            if (a > 0 && b > 0) {
+                ans++, a--, b--, c--;
+                if (a >= 1 && b >= 2) {
+                    ans++, a--, b -= 2;
+                    if (a > 0 && b > 0 && c > 0) ans++, a--, b--, c--;
+                } else if (a >= 2 && b >= 1) {
+                    ans++, a -= 2, b--;
+                    if (a > 0 && b > 0 && c > 0) ans++, a--, b--, c--;
+                }
+            }
+        } else {
+            u = a / 3;
+            v = b / 3;
+            t = min(u, v);
+            ans += 2 * t;
         }
-        ans = max(ans, tmp);
+        printf("%d\n", ans);
     }
-    printf("%.8f\n", ans);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -57,49 +57,46 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 18;
+const int N = 10;
 
 int n;
-double p[N][N], dp[1 << N][N];
-
-void add(double &x, double y) {
-    x += y;
-}
+int a[N], b[1 << N];
+double dp[1 << N];//, p[1 << N];
 
 int main() {
-    int st, t;
-    double ans, tmp;
-    scanf("%d", &n);
-    rep (i, n) rep (j, n) scanf("%lf", &p[i][j]);
-    st = 1 << n;
-    rep (i, n) FOR (j, i + 1, n - 1) {
-        dp[(1 << i) | (1 << j)][i] = p[i][j];
-        dp[(1 << i) | (1 << j)][j] = p[j][i];
-    }
-    FOR (i, 1, st - 1) rep (j, n) {
-        if (dp[i][j] == 0) continue;
-        rep (k, n) {
-            if ((i >> k) & 1) continue;
-            t = i | (1 << k);
-            add(dp[t][j], p[j][k]);
-            add(dp[t][k], p[k][j]);
+    int sum, st, tmp;
+    double p;
+    while (~scanf("%d", &n)) {
+        sum = 0, st = 1 << n;
+        rep (i, n) {
+            scanf("%d", &a[i]);
+            sum += a[i];
         }
-    }
-    ans = 0;
-    FOR (i, 1, st - 1) {
-        if (dp[i][0] == 0) continue;
-        tmp = dp[i][0];
-        rep (j, n) {
-            if ((i >> j) & 1) continue;
-            tmp *= p[0][j];
+        memset(b, 0, sizeof(b));
+        rep (k, st) {
+            tmp = 0;
+            rep (i, n) {
+                if (!(k >> i & 1)) continue;
+                tmp += a[i];
+            }
+            b[k] = tmp;
         }
-        ans = max(ans, tmp);
+        memset(dp, 0, sizeof(dp));
+        dp[0] = 0;
+        FOR (k, 1, st - 1) {
+            rep (i, n) {
+                if (!(k >> i & 1)) continue;
+                dp[k] += (dp[k ^ 1 << i] + 1) * 1.0 * a[i] / sum;
+            }
+            //sc(dp[k]);
+            p = 1.0 * (sum - b[k]) / sum;
+            dp[k] = (dp[k] + p) / (1.0 - p);
+            //sc3(k, p, dp[k]);
+        }
+        printf("%.10f\n", dp[st - 1]);
     }
-    printf("%.8f\n", ans);
     return 0;
 }
-
-
 
 
 
