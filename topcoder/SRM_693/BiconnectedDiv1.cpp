@@ -74,12 +74,34 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
+const int N = 105;
+
+void getMin(int &x, int y) {
+    x = min(x, y);
+}
+
 class BiconnectedDiv1 {
-        public:
-        int minimize(vector <int> w1, vector <int> w2) {
-                $CARETPOSITION$
+	public:
+    int minimize(vector <int> w1, vector <int> w2) {
+        int n = SZ(w1) + 1;
+        int dp[N][2];
+        memset(dp, 127, sizeof(dp));
+        dp[0][0] = -1, dp[0][1] = w1[0] + w2[0];
+        //sc(dp[0][1]);
+        FOR (i, 0, n - 3) {
+            if (dp[i][0] != -1) getMin(dp[i + 1][1], dp[i][0] + w1[i + 1] + w2[i + 1]);
+            if (dp[i][1] != -1) {
+                getMin(dp[i + 1][0], dp[i][1] + w1[i + 1]);
+                if (i + 1 <= n - 3) {
+                    getMin(dp[i + 1][1], dp[i][1] + w2[i + 1]);
+                }
+            }
         }
-        
+
+        return dp[n - 2][0];
+    }
+
+
 // BEGIN CUT HERE
 	public:
 	void run_test(int Case) { if ((Case == -1) || (Case == 0)) test_case_0(); if ((Case == -1) || (Case == 1)) test_case_1(); if ((Case == -1) || (Case == 2)) test_case_2(); if ((Case == -1) || (Case == 3)) test_case_3(); }
@@ -97,8 +119,8 @@ class BiconnectedDiv1 {
 
 // BEGIN CUT HERE
 int main() {
-        BiconnectedDiv1 ___test;
-        ___test.run_test(-1);
-        return 0;
+    BiconnectedDiv1 ___test;
+    ___test.run_test(-1);
+    return 0;
 }
 // END CUT HERE
