@@ -74,12 +74,38 @@ typedef pair<int, pii> pi3;
 typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
-const int N = 55;
+const int N = 55, M = 256;
+
+int n;
+bool f[2][M][M];
 
 class TrySail {
     public:
     int get(vector <int> a) {
+        int now = 0, pre = 1, ans = 0, tol = 0;
+        n = SZ(a);
+        rep (i, n) tol ^= a[i];
+        memset(f[now], 0, sizeof(f[now]));
+        f[now][0][0] = 1;
+        rep (k, n) {
+            swap(now, pre);
+            memset(f[now], 0, sizeof(f[now]));
+            rep (i, M) rep (j, M) {
+                if (f[pre][i][j]) {
+                    f[now][i][j] = 1;
+                    f[now][i ^ a[k]][j] = 1;
+                    f[now][i][j ^ a[k]] = 1;
+                }
+            }
+        }
+        rep (i, M) rep (j, M) {
+            if (!f[now][i][j]) continue;
+            ans = max(ans, i + j + (tol ^ i ^ j));
+        }
 
+        //a + b > a ^ b
+
+        return ans;
     }
 
 // BEGIN CUT HERE
@@ -100,8 +126,8 @@ class TrySail {
 
 // BEGIN CUT HERE
 int main() {
-        TrySail ___test;
-        ___test.run_test(-1);
-        return 0;
+    TrySail ___test;
+    ___test.run_test(-1);
+    return 0;
 }
 // END CUT HERE
