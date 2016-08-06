@@ -37,10 +37,11 @@
 #define dis(x1, y1, x2, y2) (((x1) - (x2)) * ((x1) - (x2)) + ((y1) - (y2)) * ((y1) - (y2)))
 #define FASTIO ios::sync_with_stdio(false);cin.tie(0)
 
-#define sc(x) cout << #x" = " << x << endl
+#define sc(x) cout << #x" = " << x << endl, system("pause")
 #define sc2(x, y) cout << #x" = " << x << " " << #y" = " << y << endl, system("pause")
 #define sc3(x, y, z) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << endl, system("pause")
-#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl
+#define sc4(x, y, z, w) cout << #x" = " << x << " " << #y" = " << y << " " << #z" = " << z << " " << #w" = " << w << endl, system("pause")
+
 #define in(n) scanf("%d", &n)
 #define in2(n, m) scanf("%d %d", &n, &m)
 #define in3(x, y, z) scanf("%d %d %d", &x, &y, &z)
@@ -60,6 +61,7 @@ const int N = 2005;
 
 int n, k, e;
 int head[N], pnt[N * 2], nxt[N * 2];
+bool f[N], g[N];
 
 void init() {
     e = 0;
@@ -70,8 +72,18 @@ void add_edge(int u, int v) {
     pnt[e] = v, nxt[e] = head[u], head[u] = e++;
 }
 
+void dfs(int u, int fa, int d, int t) {
+    //sc4(u, fa, d, t);
+    f[u] = 1;
+    if (d == t) return ;
+    repe (i, u) {
+        if (pnt[i] == fa) continue;
+        dfs(pnt[i], u, d + 1, t);
+    }
+}
+
 int main() {
-    int u, v;
+    int u, v, ans, tmp;
     while (~scanf("%d %d", &n, &k)) {
         init();
         rep (i, n - 1) {
@@ -79,6 +91,30 @@ int main() {
             add_edge(u, v);
             add_edge(v, u);
         }
+        ans = n;
+        if (k % 2) {
+            FOR (i, 1, n) repe (j, i) {
+                u = i, v = pnt[j];
+                memset(f, 0, sizeof(f));
+                dfs(u, v, 0, (k - 1) / 2);
+                memcpy(g, f, sizeof(f));
+                dfs(v, u, 0, (k - 1) / 2);
+                tmp = 0;
+                FOR (l, 1, n) tmp += f[l] | g[l];
+                ans = min(ans, n - tmp);
+                //sc3(i, j, tmp);
+            }
+        } else {
+            FOR (i, 1, n) {
+                memset(f, 0, sizeof(f));
+                dfs(i, -1, 0, k / 2);
+                tmp = 0;
+                FOR (l, 1, n) tmp += f[l];
+                ans = min(ans, n - tmp);
+                //sc2(i, tmp);
+            }
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }
