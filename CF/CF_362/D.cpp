@@ -58,11 +58,38 @@ typedef vector< pair<int, int> > vpii;
 typedef long long LL;
 
 const int N = 205, CH = 26;
+const LL INF = 1e18;
+
+typedef LL mat[N][N];
 
 int n;
 LL m;
 int a[N];
 char s[N];
+
+int E;
+mat ret, tmp, g;
+
+void mul(mat a, mat b) {
+    rep (i, E) rep (j, E) tmp[i][j] = -INF;
+    rep (i, E) rep (j, E) rep (k, E) {
+        tmp[i][j] = max(tmp[i][j], a[i][k] + b[k][j]);
+    }
+    rep (i, E) rep (j, E) a[i][j] = tmp[i][j];
+}
+
+void power(mat a, LL y)  {
+    rep (i, E) rep (j, E) {
+        ret[i][j] = -INF;
+        g[i][j] = a[i][j];
+    }
+    rep (i, E) ret[i][i] = 0;
+    while (y) {
+        if (y & 1) mul(ret, g);
+        mul(g, g);
+        y >>= 1LL;
+    }
+}
 
 struct Aho_Corasick {
     int e;
@@ -86,14 +113,15 @@ struct Aho_Corasick {
             }
             p = chd[p][id];
         }
-        wv[p] = val;
+        //   caution!!!
+        wv[p] += val;
     }
 
     void build() {
         int i, p, v, l, r;
         fail[0] = l = r = 0;
         for (i = 0; i < CH; i++) {
-            v = chd[i][0];
+            v = chd[0][i];
             if (v != -1) {
                 fail[v] = 0;
                 q[r++] = v;
@@ -112,6 +140,22 @@ struct Aho_Corasick {
         }
     }
 
+    void solve() {
+        int v;
+        LL ans;
+        mat a;
+        E = e;
+        rep (i, E) rep (j, E) a[i][j] = -INF;
+        rep (i, e) rep (j, CH) {
+            v = chd[i][j];
+            a[i][v] = wv[v];
+        }
+        power(a, m);
+        ans = -INF;
+        rep (j, E) ans = max(ans, ret[0][j]);
+        printf("%I64d\n", ans);
+    }
+
 } AC;
 
 int main() {
@@ -123,21 +167,7 @@ int main() {
             AC.add(s, a[i]);
         }
         AC.build();
+        AC.solve();
     }
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
